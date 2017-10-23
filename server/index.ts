@@ -18,9 +18,11 @@ app.use('/static/', express.static(path.resolve('static')));
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+const SESSION_SECRET = process.env.SESSION_SECRET;
+if (!SESSION_SECRET) throw new Error('Must specify SESSION_SECRET environment variable');
 app.use(session({
-    secret: process.env.SESSION_SECRET,
-    cookie: process.env.SESSION_COOKIE,
+    secret: SESSION_SECRET,
+    name: process.env.SESSION_COOKIE,
     resave: false,
     saveUninitialized: true,
 }));
