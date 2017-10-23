@@ -1,0 +1,36 @@
+{
+  "name": "tutor-match",
+  "version": "0.0.1",
+  "description": "A web app for matching up tutors with students who wish to be tutored",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc -p server",
+    "start": "./node.sh .",
+    "watch": "(tsc -p server --watch &) && nodemon -x ./node.sh ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "https+git://github.com/amikhalev/tutor-match.git"
+  },
+  "author": "Alex Mikhalev <alexmikhalevalex@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/node": "^8.0.46",
+    "body-parser": "^1.18.2",
+    "bootstrap": "^4.0.0-beta.2",
+    "cookie-parser": "^1.4.3",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "fs-extra": "^4.0.2",
+    "passport": "^0.4.0",
+    "passport-google-oauth": "^1.0.0",
+    "pug": "^2.0.0-rc.4"
+  },
+  "devDependencies": {
+    "@types/express": "^4.0.37",
+    "@types/passport": "^0.3.4",
+    "nodemon": "^1.12.1"
+  }
+}

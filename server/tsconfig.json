@@ -1,0 +1,22 @@
+{
+    "include": [
+        "./**/*.ts",
+        "./**/*.js"
+    ],
+    "compilerOptions": {
+        "outDir": "../dist/",
+        "allowJs": true,
+        "checkJs": true,
+        "strict": false,
+        "strictNullChecks": true,
+        "noImplicitThis": true,
+        "target": "es2017",
+        "module": "commonjs",
+        "lib": [
+            "es2017"
+        ],
+        "types": [
+            "node"
+        ]
+    }
+}
