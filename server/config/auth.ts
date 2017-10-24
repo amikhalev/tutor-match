@@ -5,6 +5,7 @@ import { Connection } from 'typeorm';
 
 import { User } from '../entities';
 import * as env from '../env';
+import { UserRepository } from '../repositories/UserRepository';
 
 let _passport: Passport.Passport | null = null;
 
@@ -19,31 +20,16 @@ const GOOGLE_SCOPES = ['https://www.googleapis.com/auth/plus.login'];
 function configureAuth(app: Express.Express, passport: Passport.Passport, connection: Connection) {
     _passport = passport;
 
+    const users = connection.getCustomRepository(UserRepository);
+
     passport.use('google', new PassportGoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: env.getBaseUri() + urls.GOOGLE_CALLBACK,
-    }, async (accessToken, refreshToken, profile: Passport.Profile, done) => {
+    }, (accessToken, refreshToken, profile: Passport.Profile, done) => {
         console.log(`logging in user id=${profile.id}, name="${profile.displayName}"`);
-        let user: User | undefined;
-        try {
-            user = await connection.manager.findOne(User, { where: { googleId: profile.id } });
-        } catch (e) {
-            return done(e);
-        }
-        if (!user) {
-            user = new User();
-        }
-        user.googleId = profile.id;
-        user.displayName = profile.displayName;
-        user.givenName = profile.name ? profile.name.givenName : '';
-        user.familyName = profile.name ? profile.name.familyName : '';
-        try {
-            await connection.manager.save(user);
-            done(null, user);
-        } catch (e) {
-            done(e);
-        }
+        users.verifyUser(profile)
+            .then((user) => done(null, user), (err) => done(err));
     }));
 
     passport.serializeUser(async (user: User, done) => {
