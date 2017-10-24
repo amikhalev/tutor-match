@@ -9,7 +9,7 @@ async function createApp() {
     const passport = new Passport();
 
     const connection = await config.configureDatabase();
-    config.configureExpress(app);
+    await config.configureExpress(app, connection);
     config.configureAuth(app, passport, connection);
 
     app.use(router);

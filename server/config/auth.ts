@@ -40,19 +40,19 @@ function configureAuth(app: Express, passport: Passport.Passport, connection: Co
         user.familyName = profile.name ? profile.name.familyName : '';
         try {
             await connection.manager.save(user);
-            done(null, profile);
+            done(null, user);
         } catch (e) {
             done(e);
         }
     }));
 
-    passport.serializeUser(async (profile: Passport.Profile, done) => {
-        done(null, profile.id);
+    passport.serializeUser(async (user: User, done) => {
+        done(null, user.id);
     });
 
-    passport.deserializeUser(async (id: string, done) => {
+    passport.deserializeUser(async (id: number, done) => {
         try {
-            const user = await connection.manager.findOne(User, { where: { googleId: id } });
+            const user = await connection.manager.findOneById(User, id);
             done(null, user);
         } catch (e) {
             done(e);
