@@ -23,4 +23,12 @@ function getBaseUri() {
     return `http://${getHostname()}:${getPort()}`;
 }
 
-export { loadDotenv, getHostname, getPort, getBaseUri };
+function getEnv(name: string) {
+    const value = process.env[name];
+    if (!value) {
+        throw new Error(`Must specify "${name}" environment variable`);
+    }
+    return value;
+}
+
+export { loadDotenv, getHostname, getPort, getBaseUri, getEnv };

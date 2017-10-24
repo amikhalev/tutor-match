@@ -21,11 +21,23 @@
             ]
         },
         {
+            "taskName": "start",
+            "type": "process",
+            "command": "./node.sh",
+            "args": [
+                "."
+            ],
+            "problemMatcher": []
+        },
+        {
             "taskName": "tslint",
             "type": "process",
             "command": "node_modules/.bin/tslint",
             "args": [
-                "-p", "server", "-t", "verbose"
+                "-p",
+                "server",
+                "-t",
+                "verbose"
             ],
             "problemMatcher": [
                 "$tslint5"
@@ -36,7 +48,11 @@
             "type": "process",
             "command": "node_modules/.bin/tslint",
             "args": [
-                "-p", "server", "-t", "verbose", "--fix"
+                "-p",
+                "server",
+                "-t",
+                "verbose",
+                "--fix"
             ],
             "problemMatcher": [
                 "$tslint5"

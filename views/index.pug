@@ -3,3 +3,7 @@ extends layout.pug
 block content
   .jumbotron
     h1= message
+    if user
+      span Your role is #{user.roleName}
+    else
+      span You are not logged in

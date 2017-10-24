@@ -1,9 +1,19 @@
+/* tslint:disable:ordered-imports */
+import 'reflect-metadata';
+
+// uses import = require syntax so it is loaded before app
+import env = require('./env');
+env.loadDotenv();
+
 import * as http from 'http';
+import createApp = require('.');
 
-import app = require('.');
-import * as env from './env';
-
-const server = new http.Server(app.default);
-server.listen(env.getPort(), env.getHostname(), () => {
-    console.log(`App listening at ${env.getBaseUri()}`);
-});
+createApp.default()
+    .then(({ app }) => {
+        const server = new http.Server(app);
+        server.listen(env.getPort(), env.getHostname(), () => {
+            console.log(`App listening at ${env.getBaseUri()}`);
+        });
+    }).catch((e) => {
+        console.error('Error starting app: ', e);
+    });
