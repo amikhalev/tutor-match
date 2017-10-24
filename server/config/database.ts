@@ -12,7 +12,6 @@ async function configureDatabase() {
     };
 
     const connection = await createConnection(options);
-
     console.log('Database connected');
 
     return connection;

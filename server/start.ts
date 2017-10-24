@@ -11,7 +11,7 @@ import createApp = require('.');
 createApp.default()
     .then(({ app }) => {
         const server = new http.Server(app);
-        server.listen(env.getPort(), env.getHostname(), () => {
+        server.listen(env.getPort(), () => {
             console.log(`App listening at ${env.getBaseUri()}`);
         });
     }).catch((e) => {

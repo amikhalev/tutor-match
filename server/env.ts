@@ -3,7 +3,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 
 function loadDotenv() {
-    for (const envFile of ['.env', '.env.local']) {
+    for (const envFile of ['.env.local', '.env']) {
         const file = path.resolve(envFile);
         if (fs.pathExistsSync(file)) {
             dotenv.config({ path: file });

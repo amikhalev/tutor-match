@@ -1,0 +1,23 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - 8080:8080
+    links:
+      - database
+    depends_on:
+      - database
+    environment:
+      DATABASE_URL: mysql://root:B7u6AlM5rz@database:3306/tutor_match
+  database:
+    image: mariadb:latest
+    environment:
+      MYSQL_DATABASE: tutor_match
+      MYSQL_ROOT_PASSWORD: B7u6AlM5rz
+  adminer:
+    image: adminer
+    links:
+      - database:db
+    ports: 
+      - 9000:8080
