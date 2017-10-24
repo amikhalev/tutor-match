@@ -1,4 +1,4 @@
-import { Express } from 'express';
+import * as Express from 'express';
 import * as Passport from 'passport';
 import { OAuth2Strategy as PassportGoogleStrategy } from 'passport-google-oauth';
 import { Connection } from 'typeorm';
@@ -16,7 +16,7 @@ const urls = {
 
 const GOOGLE_SCOPES = ['https://www.googleapis.com/auth/plus.login'];
 
-function configureAuth(app: Express, passport: Passport.Passport, connection: Connection) {
+function configureAuth(app: Express.Express, passport: Passport.Passport, connection: Connection) {
     _passport = passport;
 
     passport.use('google', new PassportGoogleStrategy({
@@ -65,16 +65,27 @@ function configureAuth(app: Express, passport: Passport.Passport, connection: Co
     app.get(urls.GOOGLE,
         passport.authenticate('google', { scope: GOOGLE_SCOPES }));
 
+    function saveSessionAndRedirect(to: string = '/'): Express.RequestHandler {
+        return (req, res, next) => {
+            if (req.session) {
+                req.session.save((err) => {
+                    if (err) return next(err);
+                    res.redirect(to);
+                    next(null);
+                });
+            } else {
+                res.redirect(to);
+            }
+        };
+    }
+
     app.get(urls.GOOGLE_CALLBACK,
         passport.authenticate('google', { failureRedirect: '/' }),
-        (req, res) => {
-            res.redirect('/');
-        });
+        saveSessionAndRedirect());
 
-    app.get(urls.LOGOUT, (req, res) => {
-        req.logout();
-        res.redirect('/');
-    });
+    app.get(urls.LOGOUT, (req, res, next) => {
+        req.logout(); next(null);
+    }, saveSessionAndRedirect());
 }
 
 const authenticate = () => _passport!.authenticate('google');
