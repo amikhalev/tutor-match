@@ -32,17 +32,13 @@ function configureAuth(app: Express.Express, passport: Passport.Passport, connec
             .then((user) => done(null, user), (err) => done(err));
     }));
 
-    passport.serializeUser(async (user: User, done) => {
+    passport.serializeUser((user: User, done) => {
         done(null, user.id);
     });
 
-    passport.deserializeUser(async (id: number, done) => {
-        try {
-            const user = await connection.manager.findOneById(User, id);
-            done(null, user);
-        } catch (e) {
-            done(e);
-        }
+    passport.deserializeUser((id: number, done) => {
+        connection.manager.findOneById(User, id)
+            .then((user) => done(null, user), (err) => done(err));
     });
 
     app.use(passport.initialize());
