@@ -1,12 +1,12 @@
-import * as path from 'path';
-import * as express from 'express';
-import { Passport } from 'passport';
-import * as cookieParser from 'cookie-parser';
 import * as bodyParser from 'body-parser';
+import * as cookieParser from 'cookie-parser';
+import * as express from 'express';
 import * as session from 'express-session';
+import { Passport } from 'passport';
+import * as path from 'path';
 
-import router from './router';
 import * as auth from './auth';
+import router from './router';
 
 const app = express();
 const passport = new Passport();
@@ -29,6 +29,6 @@ app.use(session({
 
 auth.configure(app, passport);
 
-app.use(router)
+app.use(router);
 
 export default app;

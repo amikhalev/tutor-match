@@ -1,0 +1,33 @@
+{
+    "extends": "tslint:latest",
+    "rules": {
+        "quotemark": [
+            true,
+            "single",
+            "jsx-double",
+            "avoid-template",
+            "avoid-escape"
+        ],
+        "variable-name": [
+            true,
+            "allow-leading-underscore"
+        ],
+        "object-literal-sort-keys": [
+            false
+        ],
+        "no-console": [
+            false
+        ],
+        "ordered-imports": [
+            true,
+            {
+                "import-sources-order": "lowercase-last",
+                "grouped-imports": "lowercase-last"
+            }
+        ],
+        "curly": [
+            true,
+            "ignore-same-line"
+        ]
+    }
+}

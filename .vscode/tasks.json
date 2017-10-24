@@ -1,0 +1,46 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "tsc:build",
+            "type": "typescript",
+            "tsconfig": "server/tsconfig.json",
+            "problemMatcher": [
+                "$tsc"
+            ]
+        },
+        {
+            "label": "tsc:watch",
+            "type": "typescript",
+            "tsconfig": "server/tsconfig.json",
+            "option": "watch",
+            "problemMatcher": [
+                "$tsc-watch"
+            ]
+        },
+        {
+            "taskName": "tslint",
+            "type": "process",
+            "command": "node_modules/.bin/tslint",
+            "args": [
+                "-p", "server", "-t", "verbose"
+            ],
+            "problemMatcher": [
+                "$tslint5"
+            ]
+        },
+        {
+            "taskName": "tslint:fix",
+            "type": "process",
+            "command": "node_modules/.bin/tslint",
+            "args": [
+                "-p", "server", "-t", "verbose", "--fix"
+            ],
+            "problemMatcher": [
+                "$tslint5"
+            ]
+        }
+    ]
+}
