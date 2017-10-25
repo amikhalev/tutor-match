@@ -18,8 +18,8 @@ export class TutorSession {
     @ManyToOne(type => User)
     tutor: User | null;
 
-    @Column()
-    location: string;
+    @Column('varchar', { nullable: true })
+    location: string | null;
 
     @Column('varchar', { nullable: true })
     subject: string | null;

@@ -13,17 +13,17 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column('varchar', { length: 40, unique: true })
-    googleId: string;
+    @Column('varchar', { length: 40, unique: true, nullable: true })
+    googleId: string | null;
 
     @Column()
     displayName: string;
 
-    @Column()
-    givenName: string;
+    @Column('varchar', { nullable: true })
+    givenName: string | null;
 
-    @Column()
-    familyName: string;
+    @Column('varchar', { nullable: true })
+    familyName: string | null;
 
     @Column('int', { length: 2 })
     role: UserRole = UserRole.Student;

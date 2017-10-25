@@ -8,7 +8,7 @@ async function createMockData(connection: Connection) {
         throw new Error('must have alex');
     }
     const user2 = new e.User();
-    user2.id = 1;
+    user2.id = 100;
     user2.role = e.UserRole.Student;
     user2.displayName = 'User 2';
     await connection.manager.save(user2);
