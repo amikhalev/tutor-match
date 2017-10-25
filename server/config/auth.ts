@@ -29,7 +29,7 @@ function configureAuth(app: Express.Express, passport: Passport.Passport, connec
     }, (accessToken, refreshToken, profile: Passport.Profile, done) => {
         console.log(`logging in user id=${profile.id}, name="${profile.displayName}"`);
         users.verifyUser(profile)
-            .then((user) => done(null, user), (err) => done(err));
+            .then(user => done(null, user), err => done(err));
     }));
 
     passport.serializeUser((user: User, done) => {
@@ -38,7 +38,7 @@ function configureAuth(app: Express.Express, passport: Passport.Passport, connec
 
     passport.deserializeUser((id: number, done) => {
         connection.manager.findOneById(User, id)
-            .then((user) => done(null, user), (err) => done(err));
+            .then(user => done(null, user), err => done(err));
     });
 
     app.use(passport.initialize());
@@ -50,7 +50,7 @@ function configureAuth(app: Express.Express, passport: Passport.Passport, connec
     function saveSessionAndRedirect(to: string = '/'): Express.RequestHandler {
         return (req, res, next) => {
             if (req.session) {
-                req.session.save((err) => {
+                req.session.save(err => {
                     if (err) return next(err);
                     res.redirect(to);
                     next(null);

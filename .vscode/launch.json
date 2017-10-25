@@ -6,6 +6,15 @@
     "configurations": [
         {
             "type": "node",
+            "request": "launch",
+            "name": "Launch Server",
+            "program": "${workspaceFolder}/index.js",
+            "env": {
+                "NODE_ENV": "development"
+            }
+        },
+        {
+            "type": "node",
             "request": "attach",
             "name": "Attach Docker",
             "address": "localhost",

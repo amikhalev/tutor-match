@@ -6,7 +6,7 @@ import { User } from '../entities/User';
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
     verifyUser(profile: Passport.Profile): Promise<User> {
-        return this.manager.transaction(async (manager) => {
+        return this.manager.transaction(async manager => {
             let user: User | undefined = await manager.findOne(User, { where: { googleId: profile.id } });
             if (!user || !user.googleId) {
                 user = new User();

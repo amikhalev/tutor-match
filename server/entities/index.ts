@@ -1,5 +1,6 @@
+import { TutorSession } from './TutorSession';
 import { User } from './User';
 
-const entities = [ User ];
+const entities = [ TutorSession, User ];
 
-export { User, entities };
+export { TutorSession, User, entities };

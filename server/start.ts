@@ -14,6 +14,6 @@ createApp.default()
         server.listen(env.getPort(), () => {
             console.log(`App listening at ${env.getBaseUri()}`);
         });
-    }).catch((e) => {
+    }).catch(e => {
         console.error('Error starting app: ', e);
     });
