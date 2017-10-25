@@ -25,7 +25,7 @@ function configureAuth(app: Express.Express, passport: Passport.Passport, connec
     passport.use('google', new PassportGoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: env.getBaseUri() + urls.GOOGLE_CALLBACK,
+        callbackURL: env.getPublicUri() + urls.GOOGLE_CALLBACK,
     }, (accessToken, refreshToken, profile: Passport.Profile, done) => {
         console.log(`logging in user id=${profile.id}, name="${profile.displayName}"`);
         users.verifyUser(profile)

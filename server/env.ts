@@ -2,25 +2,16 @@ import * as dotenv from 'dotenv';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 
-function loadDotenv() {
-    for (const envFile of ['.env.local', '.env']) {
-        const file = path.resolve(envFile);
-        if (fs.pathExistsSync(file)) {
-            dotenv.config({ path: file });
-        }
-    }
-}
-
-function getHostname() {
-    return process.env.HOST || 'localhost';
+function loadEnv() {
+    dotenv.config();
 }
 
 function getPort() {
     return +(process.env.PORT || 8080);
 }
 
-function getBaseUri() {
-    return `http://${getHostname()}:${getPort()}`;
+function getPublicUri() {
+    return process.env.PUBLIC_URI || `http://localhost:${getPort()}`;
 }
 
 function getEnv(name: string) {
@@ -31,4 +22,4 @@ function getEnv(name: string) {
     return value;
 }
 
-export { loadDotenv, getHostname, getPort, getBaseUri, getEnv };
+export { loadEnv, getPort, getPublicUri, getEnv };

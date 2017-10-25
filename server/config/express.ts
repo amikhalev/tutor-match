@@ -25,7 +25,7 @@ async function configureExpress(app: express.Express, connection: Connection) {
 
     app.use(session({
         secret: getEnv('SESSION_SECRET'),
-        name: process.env.SESSION_COOKIE,
+        name: process.env.SESSION_COOKIE || 'tutormatch.sid',
         resave: false,
         saveUninitialized: true,
         store: sessionStore,
