@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import * as moment from 'moment';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne, JoinTable, PrimaryGeneratedColumn } from 'typeorm';
 
 import { User } from './User';
 
@@ -23,6 +23,13 @@ export class TutorSession {
 
     @Column('varchar', { nullable: true })
     subject: string | null;
+
+    @Column('int')
+    maxStudents: number = 0;
+
+    @ManyToMany(type => User)
+    @JoinTable({ name: 'tutor_session_students' })
+    students: User[] = [];
 
     get startTimeCalendar() {
         return moment(this.startTime).calendar(new Date(), {

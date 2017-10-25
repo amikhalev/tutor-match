@@ -1,6 +1,6 @@
 import { TutorSession } from './TutorSession';
-import { User } from './User';
+import { User, UserRole } from './User';
 
 const entities = [ TutorSession, User ];
 
-export { TutorSession, User, entities };
+export { TutorSession, User, UserRole, entities };

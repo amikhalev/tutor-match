@@ -18,6 +18,7 @@ block content
             h4.card-title
               = (session.subject) ? `Tutoring session over ${session.subject}` : `Tutoring session`
             h6.card-subtitle.mb-2.text-muted Tutored by <b>#{session.tutor ? session.tutor.displayName : 'anonymous'}</b>
-            p.card-text.
-              #{session.startVerb} <b>#{session.startTimeCalendar}</b>, for <b>#{session.durationHuman}</b>
+            p.card-text: ul
+              li #{session.startVerb} <b>#{session.startTimeCalendar}</b>, for <b>#{session.durationHuman}</b>
+              li <b>#{session.students.length}</b> out of <b>#{session.maxStudents || 'unlimited'}</b> students signed up
             a.btn.btn-primary(href='#') Sign up

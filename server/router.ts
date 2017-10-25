@@ -49,8 +49,9 @@ function createRouter(connection: Connection) {
     router.get(nav.tutorSessions.href, (req, res, next) => {
         const timeRange = parseTimeRange(req.query.timeRange);
         const now = new Date();
-        let query = tutorSessions.createQueryBuilder('user')
-            .leftJoinAndSelect('user.tutor', 'tutor');
+        let query = tutorSessions.createQueryBuilder('session')
+            .leftJoinAndSelect('session.tutor', 'tutor')
+            .leftJoinAndSelect('session.students', 'students');
         query = filterTimeRange(timeRange, query);
         query.getMany()
             .then(sessions => {
