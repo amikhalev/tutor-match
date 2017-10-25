@@ -1,4 +1,4 @@
-FROM tutormatch:latest
+FROM tutor-match:latest
 
 RUN npm install -g nodemon
 
