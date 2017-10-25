@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import * as moment from 'moment';
-import { Column, Entity, ManyToMany, ManyToOne, JoinTable, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne, JoinTable, PrimaryGeneratedColumn, AfterLoad } from 'typeorm';
 
 import { User } from './User';
 
@@ -29,7 +29,9 @@ export class TutorSession {
 
     @ManyToMany(type => User)
     @JoinTable({ name: 'tutor_session_students' })
-    students: User[] = [];
+    students?: User[];
+
+    studentCount: number;
 
     get startTimeCalendar() {
         return moment(this.startTime).calendar(new Date(), {
@@ -48,5 +50,10 @@ export class TutorSession {
 
     get startVerb() {
         return (this.startTime >= new Date()) ? 'Starting' : 'Started';
+    }
+
+    @AfterLoad()
+    private afterLoad() {
+        if (this.students) this.studentCount = this.students.length;
     }
 }

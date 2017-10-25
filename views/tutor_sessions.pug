@@ -20,5 +20,5 @@ block content
             h6.card-subtitle.mb-2.text-muted Tutored by <b>#{session.tutor ? session.tutor.displayName : 'anonymous'}</b>
             p.card-text: ul
               li #{session.startVerb} <b>#{session.startTimeCalendar}</b>, for <b>#{session.durationHuman}</b>
-              li <b>#{session.students.length}</b> out of <b>#{session.maxStudents || 'unlimited'}</b> students signed up
+              li <b>#{session.studentCount}</b> out of <b>#{session.maxStudents || 'unlimited'}</b> students signed up
             a.btn.btn-primary(href='#') Sign up

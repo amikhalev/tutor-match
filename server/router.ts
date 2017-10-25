@@ -51,7 +51,7 @@ function createRouter(connection: Connection) {
         const now = new Date();
         let query = tutorSessions.createQueryBuilder('session')
             .leftJoinAndSelect('session.tutor', 'tutor')
-            .leftJoinAndSelect('session.students', 'students');
+            .loadRelationCountAndMap('session.studentCount', 'session.students');
         query = filterTimeRange(timeRange, query);
         query.getMany()
             .then(sessions => {
