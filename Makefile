@@ -24,7 +24,7 @@ install-prod:
 
 # Target to install node_modules if depended upon by other targets
 node_modules: package.json
-	[ ! -d node_modules ] && $(NPM) install
+	[ -e node_modules ] || $(NPM) install
 
 # Builds the server code (using typescript)
 build-server: $(addsuffix .js,$(SERVER_OUTS))
