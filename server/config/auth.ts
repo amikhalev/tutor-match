@@ -5,7 +5,7 @@ import { Connection } from 'typeorm';
 
 import { User } from '../entities';
 import * as env from '../env';
-import { UserRepository } from '../repositories/UserRepository';
+import { Repositories } from '../repositories';
 
 let _passport: Passport.Passport | null = null;
 
@@ -17,10 +17,10 @@ const urls = {
 
 const GOOGLE_SCOPES = ['https://www.googleapis.com/auth/plus.login'];
 
-function configureAuth(app: Express.Express, passport: Passport.Passport, connection: Connection) {
+function configureAuth(app: Express.Express, passport: Passport.Passport, repositories: Repositories) {
     _passport = passport;
 
-    const users = connection.getCustomRepository(UserRepository);
+    const { users } = repositories;
 
     passport.use('google', new PassportGoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
@@ -37,7 +37,7 @@ function configureAuth(app: Express.Express, passport: Passport.Passport, connec
     });
 
     passport.deserializeUser((id: number, done) => {
-        connection.manager.findOneById(User, id)
+        users.findOneById(id)
             .then(user => done(null, user), err => done(err));
     });
 
