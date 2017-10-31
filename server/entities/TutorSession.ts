@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 import * as moment from 'moment';
-import { Column, Entity, ManyToMany, ManyToOne, JoinTable, PrimaryGeneratedColumn, AfterLoad } from 'typeorm';
+import { AfterLoad, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { User } from './User';
 

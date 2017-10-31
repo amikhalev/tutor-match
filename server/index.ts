@@ -15,7 +15,6 @@ async function createApp(connection: Connection) {
     const router = await createRouter(connection);
     app.use(router);
 
-
     return { app, passport, connection };
 }
 
