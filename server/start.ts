@@ -6,14 +6,24 @@ import env = require('./env');
 env.loadEnv();
 
 import * as http from 'http';
-import createApp = require('.');
+import { config, createApp } from './';
 
-createApp.default()
-    .then(({ app }) => {
-        const server = new http.Server(app);
-        server.listen(env.getPort(), () => {
-            console.log(`App listening at ${env.getPublicUri()}`);
-        });
-    }).catch(e => {
+async function start() {
+    const connection = await config.configureDatabase();
+
+    if (process.env.NODE_ENV === 'development') {
+        console.log('Inserting mock data');
+        await config.createMockData(connection);
+    }
+
+    const { app } = await createApp(connection);
+
+    const server = new http.Server(app);
+    server.listen(env.getPort(), () => {
+        console.log(`App listening at ${env.getPublicUri()}`);
+    });
+}
+
+start().catch(e => {
         console.error('Error starting app: ', e);
     });

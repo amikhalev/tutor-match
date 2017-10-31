@@ -1,8 +1,9 @@
 FROM node:alpine
 
-ADD package.json package-lock.json /app/
+RUN npm install -g yarn
+ADD package.json yarn.lock /app/
 WORKDIR /app/
-RUN npm install --production --verbose
+RUN yarn install --production --verbose
 
 ADD index.js .env /app/
 ADD static/ /app/static
