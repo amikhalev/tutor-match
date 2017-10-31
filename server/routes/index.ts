@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { Connection, SelectQueryBuilder } from 'typeorm';
 
 import { Repositories } from '../repositories';
 
@@ -18,7 +17,6 @@ function createRouter(repositories: Repositories) {
 
     router.get(nav.tutorSessions.href, (req, res, next) => {
         const timeRange = parseTimeRange(req.query.timeRange);
-        const now = new Date();
         let query = tutorSessions.createQueryBuilder('session')
             .leftJoinAndSelect('session.tutor', 'tutor')
             .loadRelationCountAndMap('session.studentCount', 'session.students');

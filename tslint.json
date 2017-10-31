@@ -1,5 +1,5 @@
 {
-    "extends": "tslint:latest",
+    "extends": "tslint:recommended",
     "rules": {
         "quotemark": [
             true,
@@ -38,6 +38,7 @@
         ],
         "arrow-parens": [
             true, "ban-single-arg-parens"
-        ]
+        ],
+        "no-unused-variable": true
     }
 }

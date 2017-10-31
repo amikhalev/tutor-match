@@ -1,6 +1,4 @@
 import * as dotenv from 'dotenv';
-import * as fs from 'fs-extra';
-import * as path from 'path';
 
 function loadEnv() {
     dotenv.config();

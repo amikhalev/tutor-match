@@ -1,7 +1,6 @@
 import * as Express from 'express';
 import * as Passport from 'passport';
 import { OAuth2Strategy as PassportGoogleStrategy } from 'passport-google-oauth';
-import { Connection } from 'typeorm';
 
 import { User } from '../entities';
 import * as env from '../env';

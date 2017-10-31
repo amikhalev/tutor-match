@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import * as moment from 'moment';
 import { AfterLoad, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -53,6 +52,7 @@ export class TutorSession {
     }
 
     @AfterLoad()
+    /* tslint:disable-next-line:no-unused-variable */
     private afterLoad() {
         if (this.students) this.studentCount = this.students.length;
     }

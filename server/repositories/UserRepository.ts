@@ -1,5 +1,5 @@
 import * as Passport from 'passport';
-import { EntityRepository, Repository, Transaction } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 
 import { User } from '../entities/User';
 
