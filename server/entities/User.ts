@@ -25,6 +25,9 @@ export class User {
     @Column('varchar', { nullable: true })
     familyName: string | null;
 
+    @Column('varchar', { nullable: true })
+    biography: string | null;
+
     @Column('int', { length: 2 })
     role: UserRole = UserRole.Student;
 

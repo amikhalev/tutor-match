@@ -8,7 +8,7 @@ import { filterTimeRange, parseTimeRange } from './timeRange';
 function createRouter(repositories: Repositories) {
     const router = Router();
 
-    const { tutorSessions } = repositories;
+    const { users, tutorSessions } = repositories;
 
     router.get(nav.home.href, (req, res) => {
         console.log('user: ', req.user && req.user.displayName);
@@ -31,11 +31,20 @@ function createRouter(repositories: Repositories) {
             }).catch(next);
     });
 
-    router.get(nav.home.href, (req, res) => {
-        res.render('profile', { ...nav.locals(req), user: req.params.userId });
+    router.get("/profile/:userId", (req, res) => {
+        let userPromise = users.findOneById(req.params.userId);
+        if(!userPromise) {
+            res.render('profile', {...nav.locals(req)});
+            return;
+        }
+        userPromise.then((value) => {
+            if(value) {
+                res.render('profile', { ...nav.locals(req), theUser: value});
+            } else {
+                res.render('profile', {...nav.locals(req)});
+            }
+        });
     });
-
     return router;
 }
-
 export { createRouter };

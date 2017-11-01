@@ -2,9 +2,7 @@ import { Request } from 'express';
 
 export const home = { title: 'Home', href: '/' };
 export const tutorSessions = { title: 'Tutor Sessions', href: '/tutor-sessions' };
-export const profile = { title: 'Profile', href: '/profile/:userId' }
-
-export const nav = [ home, tutorSessions, profile ];
+export const nav = [ home, tutorSessions ];
 
 export function locals(req: Request) {
     const activeItem = nav.find(item => req.path === item.href);

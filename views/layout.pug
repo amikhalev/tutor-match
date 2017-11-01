@@ -15,6 +15,9 @@ html
                         each item in nav
                             li.nav-item(class={active: item.active})
                                 a.nav-link(href=item.href)= item.title
+                        if user
+                            li.nav-item
+                                a.nav-link(href='/profile/' + user.id)= 'Profile'
                     form.form-inline.my-md-0
                         if !user
                             a.btn.btn-primary(href='/auth/google') Login
