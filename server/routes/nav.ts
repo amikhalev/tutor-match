@@ -1,17 +1,21 @@
 import { Request } from 'express';
 
-export const home = { title: 'Home', href: '/' };
-export const tutorSessions = { title: 'Tutor Sessions', href: '/tutor-sessions' };
+import { hasRole } from '../config/auth';
+import { UserRole } from '../entities';
 
-export const nav = [ home, tutorSessions ];
+export const home = {title: 'Home', href: '/', minimumRole: UserRole.None};
+export const tutorSessions = {title: 'Tutor Sessions', href: '/tutor-sessions', minimumRole: UserRole.Student};
+
+export const nav = [home, tutorSessions];
 
 export function locals(req: Request) {
     const activeItem = nav.find(item => req.path === item.href);
     return {
         title: activeItem ? activeItem.title : 'Page',
-        nav: nav.map(item => ({
-            ...item, active: item === activeItem,
-        })),
+        nav: nav.filter(item => hasRole(req, item.minimumRole))
+            .map(item => ({
+                ...item, active: item === activeItem,
+            })),
         user: req.user,
     };
 }

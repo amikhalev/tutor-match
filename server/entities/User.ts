@@ -2,10 +2,10 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum UserRole {
     None = 0,
-    Admin = 1,
-    Teacher = 2,
-    Tutor = 3,
-    Student = 4,
+    Student = 10,
+    Tutor = 20,
+    Teacher = 30,
+    Admin = 100,
 }
 
 @Entity()

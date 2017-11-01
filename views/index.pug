@@ -2,8 +2,8 @@ extends layout.pug
 
 block content
   .jumbotron
-    h1= message
+    h1 Welcome to TutorMatch
     if user
-      span Your role is #{user.roleName}
+      span You are a #{user.roleName}
     else
-      span You are not logged in
+      span You are not logged in. Please Login to access more pages

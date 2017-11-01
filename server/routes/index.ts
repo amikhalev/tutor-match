@@ -1,5 +1,6 @@
 import { Router } from 'express';
 
+import { ensureLoggedIn } from '../config/auth';
 import { Repositories } from '../repositories';
 
 import * as nav from './nav';
@@ -10,12 +11,12 @@ function createRouter(repositories: Repositories) {
 
     const { tutorSessions } = repositories;
 
-    router.get(nav.home.href, (req, res) => {
+    router.get(nav.home.href, ensureLoggedIn(nav.home.minimumRole), (req, res) => {
         console.log('user: ', req.user && req.user.displayName);
-        res.render('index', { ...nav.locals(req), message: 'Hello there!' });
+        res.render('index', nav.locals(req));
     });
 
-    router.get(nav.tutorSessions.href, (req, res, next) => {
+    router.get(nav.tutorSessions.href, ensureLoggedIn(nav.tutorSessions.minimumRole), (req, res, next) => {
         const timeRange = parseTimeRange(req.query.timeRange);
         let query = tutorSessions.createQueryBuilder('session')
             .leftJoinAndSelect('session.tutor', 'tutor')
