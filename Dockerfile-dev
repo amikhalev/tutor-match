@@ -1,0 +1,7 @@
+FROM tutor-match:latest
+
+ENV NODE_ENV=development
+RUN npm install -g nodemon
+
+EXPOSE 9229
+ENTRYPOINT ["nodemon", "--inspect=0.0.0.0:9229" "index.js"]

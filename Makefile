@@ -52,4 +52,4 @@ start-docker: build
 start-docker-dev: node_modules
 	$(DOCKER_COMPOSE) build
 	$(TSC) --project server --watch &
-	$(DOCKER_COMPOSE) -f docker-compose.debug.yml up web
+	$(DOCKER_COMPOSE) -f docker-compose.dev.yml up web

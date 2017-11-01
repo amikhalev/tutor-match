@@ -1,10 +1,10 @@
 version: '3'
 services:
   web:
-    image: tutor-match:debug
+    image: tutor-match:dev
     build: 
       context: .
-      dockerfile: Dockerfile-debug
+      dockerfile: Dockerfile-dev
     ports:
       - 8080:8080
       - 9229:9229
