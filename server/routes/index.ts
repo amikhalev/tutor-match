@@ -31,6 +31,10 @@ function createRouter(repositories: Repositories) {
             }).catch(next);
     });
 
+    router.get(nav.home.href, (req, res) => {
+        res.render('profile', { ...nav.locals(req), user: req.user });
+    });
+
     return router;
 }
 
