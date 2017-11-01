@@ -2,7 +2,7 @@ import { Request } from 'express';
 
 export const home = { title: 'Home', href: '/' };
 export const tutorSessions = { title: 'Tutor Sessions', href: '/tutor-sessions' };
-export const profile = { title: 'Profile', href: '/profile' }
+export const profile = { title: 'Profile', href: '/profile/:userId' }
 
 export const nav = [ home, tutorSessions, profile ];
 

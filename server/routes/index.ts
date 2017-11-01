@@ -32,7 +32,7 @@ function createRouter(repositories: Repositories) {
     });
 
     router.get(nav.home.href, (req, res) => {
-        res.render('profile', { ...nav.locals(req), user: req.user });
+        res.render('profile', { ...nav.locals(req), user: req.params.userId });
     });
 
     return router;
