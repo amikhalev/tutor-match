@@ -18,7 +18,7 @@ function createRouter(repositories: Repositories) {
     });
 
     router.param('tutor_session',  (req, res, next, value) => {
-        tutorSessions.findOneById(value, { relations: [ 'students' ] })
+        tutorSessions.findOneById(value, { relations: [ 'tutor', 'students' ] })
             .then(session => {
                 if (session) {
                     (req as any).tutorSession = session;
@@ -43,6 +43,15 @@ function createRouter(repositories: Repositories) {
                     timeRange,
                     sessions,
                 });
+            }).catch(next);
+    });
+
+    router.post(nav.tutorSessions.href, ensureLoggedIn(UserRole.Tutor), (req, res, next) => {
+        const tutorSession = TutorSession.parseFormData(req.body);
+        tutorSession.tutor = req.user;
+        tutorSessions.save(tutorSession)
+            .then(newSession => {
+                res.redirect(nav.tutorSessions.href + '/' + newSession.id);
             }).catch(next);
     });
 

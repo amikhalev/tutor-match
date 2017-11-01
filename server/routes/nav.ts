@@ -5,7 +5,7 @@ import { UserRole } from '../entities';
 
 export const home = {title: 'Home', href: '/', minimumRole: UserRole.None};
 export const tutorSessions = {title: 'Tutor Sessions', href: '/tutor_sessions', minimumRole: UserRole.Student};
-export const signUpToTutor = {title: 'Sign up to Tutor', href: '/tutor_sessions/new', minimumRole: UserRole.Tutor};
+export const signUpToTutor = {title: 'Post a session', href: '/tutor_sessions/new', minimumRole: UserRole.Tutor};
 
 export const nav = [home, tutorSessions, signUpToTutor];
 

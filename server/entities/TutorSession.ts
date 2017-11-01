@@ -17,6 +17,18 @@ export class TutorSession {
         return session;
     }
 
+    static parseFormData(data: any, existingSession?: TutorSession): TutorSession {
+        const session = existingSession || new TutorSession();
+        session.startTime = moment((data.date || session.startTime_date) + ' ' + (data.time || session.startTime_time),
+            'L HH:mmA').toDate();
+        session.durationMinutes = +(data.durationMinutes || session.durationMinutes || 0);
+        session.location = (data.location || session.location || null);
+        session.school = (data.school || session.school || null);
+        session.subject = (data.subject || session.subject || null);
+        session.maxStudents = (data.maxStudents != null) ? +data.maxStudents : session.maxStudents;
+        return session;
+    }
+
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -75,7 +87,11 @@ export class TutorSession {
     }
 
     get durationMinutes() {
-        return moment.duration(this.durationSeconds, 'seconds').asMinutes();
+        return this.durationSeconds / 60;
+    }
+
+    set durationMinutes(minutes: number) {
+        this.durationSeconds = minutes * 60;
     }
 
     get startVerb() {

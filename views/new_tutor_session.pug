@@ -14,29 +14,30 @@ block content
       .form-group
         label(for="session-subject") Subject
         .input-group
-          input.form-control(id="session-subject", type="text", required, value=session.subject)
+          input.form-control(id="session-subject", name="subject", type="text", required, value=session.subject)
       .form-group
         label(for="session-date") Date
         .input-group.date.session-date
-          input.form-control(id="session-date", type="text", required, value=session.startTime_date)
+          input.form-control(id="session-date", name="date",type="text", required, value=session.startTime_date)
           .input-group-addon: span.fa.fa-th
       .form-group
         label(for="session-time") Time
         .input-group.session-time-picker(data-placement="bottom", data-align="top", data-autoclose="true")
-          input.form-control(id="session-time", type="text", required, value=session.startTime_time)
+          input.form-control(id="session-time", name="time", type="text", required, value=session.startTime_time)
           .input-group-addon: span.fa.fa-clock-o
       .form-group
         label(for="session-duration") Duration (minutes)
         .input-group
-          input.form-control(id="session-duration", type="number", required, min=0, step=5, value=session.durationMinutes)
+          input.form-control(id="session-duration", name="durationMinutes", type="number", required, min=0, step=5,
+          value=session.durationMinutes)
       .form-group
         label(for="session-school") School
         .input-group
-          input.form-control(id="session-school", type="text", required, value=session.school)
+          input.form-control(id="session-school", name="school", type="text", required, value=session.school)
       .form-group
         label(for="session-location") Location
         .input-group
-          input.form-control(id="session-location", type="text", required, value=session.location)
+          input.form-control(id="session-location", name="location", type="text", required, value=session.location)
       button.btn.btn-primary(type="submit") Create
     script(type="text/javascript").
       $('.session-date').datepicker({
