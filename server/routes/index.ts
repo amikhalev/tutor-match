@@ -46,6 +46,11 @@ function createRouter(repositories: Repositories) {
             }).catch(next);
     });
 
+    router.get(nav.signUpToTutor.href,
+        ensureLoggedIn(nav.signUpToTutor.minimumRole), (req, res, next) => {
+            res.render('new_tutor_session', nav.locals(req));
+        });
+
     router.get(nav.tutorSessions.href + '/:tutor_session',
         ensureLoggedIn(nav.tutorSessions.minimumRole), (req, res) => {
         const session = (req as any).tutorSession as TutorSession;
