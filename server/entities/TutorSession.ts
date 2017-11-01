@@ -1,7 +1,7 @@
 import * as moment from 'moment';
 import { AfterLoad, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-import { User } from './User';
+import { User, UserRole } from './User';
 
 @Entity()
 export class TutorSession {
@@ -100,6 +100,14 @@ export class TutorSession {
 
     get url() {
         return '/tutor_sessions/' + this.id;
+    }
+
+    userCanModify(user: User): boolean {
+        return (user.role >= UserRole.Teacher) || (this.tutor && this.tutor.id === user.id);
+    }
+
+    userIsSignedUpFor(user: User): boolean {
+        return this.students && this.students.find(student => student.id === user.id);
     }
 
     @AfterLoad()

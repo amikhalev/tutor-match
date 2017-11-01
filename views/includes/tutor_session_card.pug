@@ -3,25 +3,23 @@
         h4.card-title
             a(href=session.url)= session.title
         h6.card-subtitle.mb-2.text-muted Tutored by <b>#{session.tutor ? session.tutor.displayName : 'unknown'}</b>
-        p.card-text: ul
-            if session.school
-                li At <b>#{session.school}</b>
-            else
-                li Unknown school
-            if session.location
-                li In the <b>#{session.location}</b>
-            else
-                li Unknown location
+        .card-text: ul
+            li At <b>#{session.school || "Unknown school"}</b> in the <b>#{session.location || 'unknown location'}</b>
             li #{session.startVerb} <b>#{session.startTimeCalendar}</b>, for <b>#{session.durationHuman}</b>
-            if show_students && user && ((session.tutor && session.tutor.id === user.id) || user.role >= 30)
-                li Students
+            if showing_single && user && session.userCanModify(user)
+                li Students:
                     ul
                         each student in session.students
                             li= student.displayName
             else
                 li <b>#{session.studentCount}</b> out of <b>#{session.maxStudents || 'unlimited'}</b> students signed up
-        if user && session.students && session.students.find((student) => student.id === user.id)
-            button.btn.btn-primary(disabled) You are already signed up
-        else
-            form(action=session.url + "/sign_up" method="POST")
-                button.btn.btn-primary(type="submit") Sign up
+        div.card-buttons
+            if user && session.userIsSignedUpFor(user)
+                button.btn.btn-primary(disabled) You are already signed up
+            else
+                form(action=session.url + "/sign_up" method="POST")
+                    button.btn.btn-primary(type="submit") Sign up
+            if showing_single && user && session.userCanModify(user)
+                a.btn.btn-secondary Edit
+                form(action=session.url + "/delete", method="POST")
+                    button.btn.btn-danger(type="submit") Delete
