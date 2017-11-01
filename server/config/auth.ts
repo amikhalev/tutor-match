@@ -2,11 +2,9 @@ import * as Express from 'express';
 import * as Passport from 'passport';
 import { OAuth2Strategy as PassportGoogleStrategy } from 'passport-google-oauth';
 
-import { User } from '../entities';
+import { User, UserRole } from '../entities';
 import * as env from '../env';
 import { Repositories } from '../repositories';
-
-let _passport: Passport.Passport | null = null;
 
 const urls = {
     LOGOUT: '/logout',
@@ -17,7 +15,6 @@ const urls = {
 const GOOGLE_SCOPES = ['https://www.googleapis.com/auth/plus.login'];
 
 function configureAuth(app: Express.Express, passport: Passport.Passport, repositories: Repositories) {
-    _passport = passport;
 
     const { users } = repositories;
 
@@ -69,6 +66,19 @@ function configureAuth(app: Express.Express, passport: Passport.Passport, reposi
     }, saveSessionAndRedirect());
 }
 
-const authenticate = () => _passport!.authenticate('google');
+function hasRole(req: Express.Request, minimumRole: UserRole): boolean {
+    return minimumRole === UserRole.None ||
+        (req.isAuthenticated() && (req.user as User).role >= minimumRole);
+}
 
-export { configureAuth, authenticate };
+function ensureLoggedIn(minimumRole: UserRole = UserRole.Student, redirectPage: string = '/'): Express.RequestHandler {
+    return (req, res, next) => {
+        if (hasRole(req, minimumRole)) {
+            next();
+        } else {
+            return res.redirect(redirectPage);
+        }
+    };
+}
+
+export { configureAuth, hasRole, ensureLoggedIn };

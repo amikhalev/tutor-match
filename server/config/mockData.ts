@@ -21,6 +21,8 @@ async function createMockData(connection: Connection) {
         session.startTime = new Date(2017, 9, 20 + i, 12, 1 + i);
         session.durationSeconds = 1800 + 30 * i;
         session.tutor = (i % 3 === 0) ? null : alex || null;
+        session.school = 'Timberline High School';
+        session.location = (i % 2 === 0) ? 'Calculus room' : 'Library';
         session.subject = ['Calculus', 'History', null][i % 3];
         session.maxStudents = (i + 1) % 4;
         session.students = [ alex, user2, alex, user2 ].slice(i % 4, (i + 2) % 4);

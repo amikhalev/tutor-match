@@ -18,6 +18,9 @@ export class TutorSession {
     tutor: User | null;
 
     @Column('varchar', { nullable: true })
+    school: string | null;
+
+    @Column('varchar', { nullable: true })
     location: string | null;
 
     @Column('varchar', { nullable: true })
@@ -32,6 +35,10 @@ export class TutorSession {
 
     studentCount: number;
 
+    get title() {
+        return (this.subject) ? `Tutoring session over ${this.subject}` : 'Tutoring session';
+    }
+
     get startTimeCalendar() {
         return moment(this.startTime).calendar(new Date(), {
             lastDay: '[yesterday at] LT',
@@ -39,7 +46,7 @@ export class TutorSession {
             nextDay: '[tomorrow at] LT',
             lastWeek: '[last] dddd [at] LT',
             nextWeek: 'dddd [at] LT',
-            sameElse: 'L at LT',
+            sameElse: 'L [at] LT',
         });
     }
 
@@ -49,6 +56,10 @@ export class TutorSession {
 
     get startVerb() {
         return (this.startTime >= new Date()) ? 'Starting' : 'Started';
+    }
+
+    get url() {
+        return '/tutor_sessions/' + this.id;
     }
 
     @AfterLoad()
