@@ -1,0 +1,17 @@
+.card
+    .card-body
+        h4.card-title
+            a(href=session.url)= (session.subject) ? `Tutoring session over ${session.subject}` : `Tutoring session`
+        h6.card-subtitle.mb-2.text-muted Tutored by <b>#{session.tutor ? session.tutor.displayName : 'unknown'}</b>
+        p.card-text: ul
+            if session.school
+                li At <b>#{session.school}</b>
+            else
+                li Unknown school
+            if session.location
+                li In the <b>#{session.location}</b>
+            else
+                li Unknown location
+            li #{session.startVerb} <b>#{session.startTimeCalendar}</b>, for <b>#{session.durationHuman}</b>
+            li <b>#{session.studentCount}</b> out of <b>#{session.maxStudents || 'unlimited'}</b> students signed up
+        a.btn.btn-primary(href='#') Sign up

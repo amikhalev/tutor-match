@@ -18,6 +18,9 @@ export class TutorSession {
     tutor: User | null;
 
     @Column('varchar', { nullable: true })
+    school: string | null;
+
+    @Column('varchar', { nullable: true })
     location: string | null;
 
     @Column('varchar', { nullable: true })
@@ -49,6 +52,10 @@ export class TutorSession {
 
     get startVerb() {
         return (this.startTime >= new Date()) ? 'Starting' : 'Started';
+    }
+
+    get url() {
+        return '/tutor_sessions/' + this.id;
     }
 
     @AfterLoad()

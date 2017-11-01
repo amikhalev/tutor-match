@@ -5,7 +5,7 @@ export enum TimeRange {
 }
 
 export function parseTimeRange(timeRange: string | null): TimeRange {
-    if (timeRange == null) {
+    if (!timeRange) {
         return TimeRange.All;
     }
     const int = parseInt(timeRange.toString(), 10);
@@ -24,9 +24,9 @@ export function filterTimeRange<Entity>(timeRange: TimeRange, query: SelectQuery
     SelectQueryBuilder<Entity> {
     switch (timeRange) {
         case TimeRange.ThisWeek:
-            return query.where('WEEK(user.startTime) = WEEK(CURDATE())');
+            return query.where('WEEK(session.startTime) = WEEK(CURDATE())');
         case TimeRange.Today:
-            return query.where('DATE(user.startTime) = CURDATE()');
+            return query.where('DATE(session.startTime) = CURDATE()');
         default:
         case TimeRange.All:
             return query;

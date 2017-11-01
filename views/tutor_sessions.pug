@@ -1,24 +1,20 @@
 extends layout.pug
 
 block content
-  - 
-    let heading;
-    if (timeRange == 1)
-      heading = "This week's sessions"
-    else if (timeRange == 2)
-      heading = "Today's sessions"
-    else
-      heading = "All sessions"
-  .jumbotron
-    h2= heading
-    .row
-     each session in sessions
-      .col-12.col-md-6.col-lg-4.pb-3: .card
-          .card-body
-            h4.card-title
-              = (session.subject) ? `Tutoring session over ${session.subject}` : `Tutoring session`
-            h6.card-subtitle.mb-2.text-muted Tutored by <b>#{session.tutor ? session.tutor.displayName : 'anonymous'}</b>
-            p.card-text: ul
-              li #{session.startVerb} <b>#{session.startTimeCalendar}</b>, for <b>#{session.durationHuman}</b>
-              li <b>#{session.studentCount}</b> out of <b>#{session.maxStudents || 'unlimited'}</b> students signed up
-            a.btn.btn-primary(href='#') Sign up
+  -
+    const timeRangeHeadings = {
+        0: "All sessions",
+        1: "This week's sessions",
+        2: "Today's sessions",
+    };
+    const heading = timeRangeHeadings[timeRange] || timeRangeHeadings[3];
+    let tr = 0;
+  h1 #{heading}
+    small.h4
+      while tr < 3
+        if tr !== timeRange
+          a.ml-3(href="?timeRange=" + tr)= timeRangeHeadings[tr]
+        - tr++
+  .row
+   each session in sessions
+    .col-12.col-md-6.col-lg-4.pb-3: include includes/tutor_session_card

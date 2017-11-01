@@ -4,7 +4,7 @@ import { hasRole } from '../config/auth';
 import { UserRole } from '../entities';
 
 export const home = {title: 'Home', href: '/', minimumRole: UserRole.None};
-export const tutorSessions = {title: 'Tutor Sessions', href: '/tutor-sessions', minimumRole: UserRole.Student};
+export const tutorSessions = {title: 'Tutor Sessions', href: '/tutor_sessions', minimumRole: UserRole.Student};
 
 export const nav = [home, tutorSessions];
 
