@@ -35,6 +35,10 @@ export class TutorSession {
 
     studentCount: number;
 
+    get title() {
+        return (this.subject) ? `Tutoring session over ${this.subject}` : 'Tutoring session';
+    }
+
     get startTimeCalendar() {
         return moment(this.startTime).calendar(new Date(), {
             lastDay: '[yesterday at] LT',

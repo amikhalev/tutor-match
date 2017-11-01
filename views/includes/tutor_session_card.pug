@@ -1,7 +1,7 @@
 .card
     .card-body
         h4.card-title
-            a(href=session.url)= (session.subject) ? `Tutoring session over ${session.subject}` : `Tutoring session`
+            a(href=session.url)= session.title
         h6.card-subtitle.mb-2.text-muted Tutored by <b>#{session.tutor ? session.tutor.displayName : 'unknown'}</b>
         p.card-text: ul
             if session.school

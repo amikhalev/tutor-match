@@ -11,7 +11,7 @@ export const nav = [home, tutorSessions];
 export function locals(req: Request) {
     const activeItem = nav.find(item => req.path === item.href);
     return {
-        title: activeItem ? activeItem.title : 'Page',
+        title: activeItem ? activeItem.title : null,
         nav: nav.filter(item => hasRole(req, item.minimumRole))
             .map(item => ({
                 ...item, active: item === activeItem,

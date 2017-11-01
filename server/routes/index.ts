@@ -48,7 +48,8 @@ function createRouter(repositories: Repositories) {
 
     router.get(nav.tutorSessions.href + '/:tutor_session',
         ensureLoggedIn(nav.tutorSessions.minimumRole), (req, res) => {
-        res.render('tutor_session', { ...nav.locals(req), session: (req as any).tutorSession });
+        const session = (req as any).tutorSession as TutorSession;
+        res.render('tutor_session', { ...nav.locals(req), title: session.title, session });
     });
 
     router.post(nav.tutorSessions.href + '/:tutor_session/sign_up',
