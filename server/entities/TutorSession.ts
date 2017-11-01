@@ -5,6 +5,18 @@ import { User } from './User';
 
 @Entity()
 export class TutorSession {
+    static newSessionData(currentUser: User): TutorSession {
+        const session = new TutorSession();
+        session.startTime = new Date();
+        session.durationSeconds = 30 * 60;
+        session.tutor = currentUser;
+        // session.school = currentUser.defaultSchool // TODO: waiting for this profile key
+        session.location = '';
+        session.subject = '';
+        session.maxStudents = 0;
+        return session;
+    }
+
     @PrimaryGeneratedColumn()
     id: number;
 
@@ -39,6 +51,14 @@ export class TutorSession {
         return (this.subject) ? `Tutoring session over ${this.subject}` : 'Tutoring session';
     }
 
+    get startTime_date() {
+        return moment(this.startTime).format('L');
+    }
+
+    get startTime_time() {
+        return moment(this.startTime).format('HH:mmA');
+    }
+
     get startTimeCalendar() {
         return moment(this.startTime).calendar(new Date(), {
             lastDay: '[yesterday at] LT',
@@ -52,6 +72,10 @@ export class TutorSession {
 
     get durationHuman() {
         return moment.duration(this.durationSeconds, 'seconds').humanize();
+    }
+
+    get durationMinutes() {
+        return moment.duration(this.durationSeconds, 'seconds').asMinutes();
     }
 
     get startVerb() {
