@@ -13,5 +13,15 @@
             else
                 li Unknown location
             li #{session.startVerb} <b>#{session.startTimeCalendar}</b>, for <b>#{session.durationHuman}</b>
-            li <b>#{session.studentCount}</b> out of <b>#{session.maxStudents || 'unlimited'}</b> students signed up
-        a.btn.btn-primary(href='#') Sign up
+            if show_students && user && ((session.tutor && session.tutor.id === user.id) || user.role >= 30)
+                li Students
+                    ul
+                        each student in session.students
+                            li= student.displayName
+            else
+                li <b>#{session.studentCount}</b> out of <b>#{session.maxStudents || 'unlimited'}</b> students signed up
+        if user && session.students && session.students.find((student) => student.id === user.id)
+            button.btn.btn-primary(disabled) You are already signed up
+        else
+            form(action=session.url + "/sign_up" method="POST")
+                button.btn.btn-primary(type="submit") Sign up
