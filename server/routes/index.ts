@@ -76,6 +76,18 @@ function createRouter(repositories: Repositories) {
                 .catch(next);
         });
 
+    router.post(nav.tutorSessions.href + '/:tutor_session/delete',
+        ensureLoggedIn(UserRole.Student), (req, res, next) => {
+            const session = (req as any).tutorSession as TutorSession;
+            if (!session.userCanModify(req.user)) {
+                return res.status(403).send('You are not permitted to delete TutorSession with id ' + session.id);
+            }
+            tutorSessions.deleteById(session.id)
+                .then(() => {
+                    res.redirect(nav.tutorSessions.href);
+                }).catch(next);
+        });
+
     return router;
 }
 
