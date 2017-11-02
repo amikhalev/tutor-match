@@ -103,11 +103,11 @@ export class TutorSession {
     }
 
     userCanModify(user: User): boolean {
-        return (user.role >= UserRole.Teacher) || (this.tutor && this.tutor.id === user.id);
+        return (user.role >= UserRole.Teacher) || (!!this.tutor && this.tutor.id === user.id);
     }
 
     userIsSignedUpFor(user: User): boolean {
-        return this.students && this.students.find(student => student.id === user.id);
+        return !!this.students && !!this.students.find(student => student.id === user.id);
     }
 
     @AfterLoad()
