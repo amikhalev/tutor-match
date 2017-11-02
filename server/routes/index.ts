@@ -65,7 +65,7 @@ function createRouter(repositories: Repositories) {
 
     router.post("/profile/:user_id/edit", ensureLoggedIn(UserRole.Student), (req, res) => {
         if(req.user.id == ((req as any).targetUser as User).id || req.user.role == UserRole.Admin) {
-            if(req.body.bio) {
+            if(req.body.bio && req.body.bio.length <= 250) {
                 console.info("post "+req.body.bio);
                 req.user.biography = req.body.bio;
             }
