@@ -1,0 +1,49 @@
+extends layout.pug
+
+block head
+  link(rel='stylesheet' href='/static/bootstrap-datepicker/css/bootstrap-datepicker.css')
+  script(type='text/javascript' src='/static/bootstrap-datepicker/js/bootstrap-datepicker.js')
+  link(rel="stylesheet" type="text/css" href="/static/clockpicker/bootstrap-clockpicker.css")
+  script(type="text/javascript" src="/static/clockpicker/bootstrap-clockpicker.js")
+  script(type="text/javascript" src="/static/moment/moment.js")
+
+block content
+  .jumbotron
+    h1 Post a new tutoring session
+    form(action="/tutor_sessions" method="POST")
+      .form-group
+        label(for="session-subject") Subject
+        .input-group
+          input.form-control(id="session-subject", name="subject", type="text", required, value=session.subject)
+      .form-group
+        label(for="session-date") Date
+        .input-group.date.session-date
+          input.form-control(id="session-date", name="date",type="text", required, value=session.startTime_date)
+          .input-group-addon: span.fa.fa-th
+      .form-group
+        label(for="session-time") Time
+        .input-group.session-time-picker(data-placement="bottom", data-align="top", data-autoclose="true")
+          input.form-control(id="session-time", name="time", type="text", required, value=session.startTime_time)
+          .input-group-addon: span.fa.fa-clock-o
+      .form-group
+        label(for="session-duration") Duration (minutes)
+        .input-group
+          input.form-control(id="session-duration", name="durationMinutes", type="number", required, min=0, step=5,
+          value=session.durationMinutes)
+      .form-group
+        label(for="session-school") School
+        .input-group
+          input.form-control(id="session-school", name="school", type="text", required, value=session.school)
+      .form-group
+        label(for="session-location") Location
+        .input-group
+          input.form-control(id="session-location", name="location", type="text", required, value=session.location)
+      button.btn.btn-primary(type="submit") Create
+    script(type="text/javascript").
+      $('.session-date').datepicker({
+        orientation: 'bottom',
+        todayBtn: true
+      }).find('input').val(moment().format('L'))
+      $('.session-time-picker').clockpicker({
+        twelvehour: true
+      }).find('input').val(moment().format('HH:mmA'));

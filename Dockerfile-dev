@@ -1,0 +1,10 @@
+FROM node:alpine
+
+VOLUME [ "/app" ]
+
+ENV NODE_ENV=development
+RUN npm install -g yarn nodemon
+
+EXPOSE 8080
+EXPOSE 9229
+ENTRYPOINT ["nodemon", "--inspect=0.0.0.0:9229" "index.js"]

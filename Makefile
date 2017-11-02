@@ -50,6 +50,5 @@ start-docker: build
 # files for changes. When the files are changed, they will be compiled and
 # then the server will restart.
 start-docker-dev: node_modules
-	$(DOCKER_COMPOSE) build
 	$(TSC) --project server --watch &
-	$(DOCKER_COMPOSE) -f docker-compose.debug.yml up web
+	$(DOCKER_COMPOSE) -f docker-compose.dev.yml up web

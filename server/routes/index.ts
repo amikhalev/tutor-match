@@ -18,7 +18,7 @@ function createRouter(repositories: Repositories) {
     });
 
     router.param('tutor_session',  (req, res, next, value) => {
-        tutorSessions.findOneById(value, { relations: [ 'students' ] })
+        tutorSessions.findOneById(value, { relations: [ 'tutor', 'students' ] })
             .then(session => {
                 if (session) {
                     (req as any).tutorSession = session;
@@ -80,6 +80,21 @@ function createRouter(repositories: Repositories) {
         }
     });
       
+    router.post(nav.tutorSessions.href, ensureLoggedIn(UserRole.Tutor), (req, res, next) => {
+        const tutorSession = TutorSession.parseFormData(req.body);
+        tutorSession.tutor = req.user;
+        tutorSessions.save(tutorSession)
+            .then(newSession => {
+                res.redirect(nav.tutorSessions.href + '/' + newSession.id);
+            }).catch(next);
+    });
+
+    router.get(nav.signUpToTutor.href,
+        ensureLoggedIn(nav.signUpToTutor.minimumRole), (req, res) => {
+            const session = TutorSession.newSessionData(req.user);
+            res.render('new_tutor_session', { ...nav.locals(req), session });
+        });
+
     router.get(nav.tutorSessions.href + '/:tutor_session',
         ensureLoggedIn(nav.tutorSessions.minimumRole), (req, res) => {
         const session = (req as any).tutorSession as TutorSession;
@@ -93,6 +108,18 @@ function createRouter(repositories: Repositories) {
             repositories.tutorSessions.save(session)
                 .then(() => { res.redirect(session.url); })
                 .catch(next);
+        });
+
+    router.post(nav.tutorSessions.href + '/:tutor_session/delete',
+        ensureLoggedIn(UserRole.Student), (req, res, next) => {
+            const session = (req as any).tutorSession as TutorSession;
+            if (!session.userCanModify(req.user)) {
+                return res.status(403).send('You are not permitted to delete TutorSession with id ' + session.id);
+            }
+            tutorSessions.deleteById(session.id)
+                .then(() => {
+                    res.redirect(nav.tutorSessions.href);
+                }).catch(next);
         });
 
     return router;
