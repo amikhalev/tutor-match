@@ -64,17 +64,14 @@ function createRouter(repositories: Repositories) {
     });
 
     router.post("/profile/:user_id/edit", ensureLoggedIn(UserRole.Student), (req, res) => {
-        if(req.user.id == ((req as any).targetUser as User).id || req.user.role == UserRole.Admin) {
-            if(req.body.bio && req.body.bio.length <= 250) {
-                console.info("post "+req.body.bio);
-                req.user.biography = req.body.bio;
-            }
+        if(((req as any).targetUser as User).userCanModify(req.user)) {
+            req.user.bio(req.body.bio);
             users.save(req.user);
         }
         res.redirect(((req as any).targetUser as User).url);
     });
     router.get("/profile/:user_id/edit", ensureLoggedIn(UserRole.Student), (req, res) => {
-        if(req.user.id == ((req as any).targetUser as User).id || req.user.role == UserRole.Admin) {
+        if(((req as any).targetUser as User).userCanModify(req.user)) {
             res.render('profile_edit', { ...nav.locals(req), theUser: (req as any).targetUser as User});
         } else {
             res.redirect('/');

@@ -38,4 +38,14 @@ export class User {
     get url() {
         return '/profile/' + this.id
     }
+
+    set bio(bio: string) {
+        if(bio && bio.length >= 250) {
+            this.bio = bio;
+        }
+    }
+
+    userCanModify(user: User): boolean {
+        return this.id == user.id || user.role == UserRole.Admin;
+    }
 }
