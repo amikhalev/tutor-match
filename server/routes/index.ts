@@ -3,9 +3,9 @@ import { Router } from 'express';
 import { ensureLoggedIn } from '../config/auth';
 import { TutorSession, UserRole } from '../entities';
 import { Repositories } from '../repositories';
+import { filterTimeRange, parseTimeRange } from '../timeRange';
 
 import * as nav from './nav';
-import { filterTimeRange, parseTimeRange } from './timeRange';
 
 function createRouter(repositories: Repositories) {
     const router = Router();
@@ -32,16 +32,10 @@ function createRouter(repositories: Repositories) {
 
     router.get(nav.tutorSessions.href, ensureLoggedIn(nav.tutorSessions.minimumRole), (req, res, next) => {
         const timeRange = parseTimeRange(req.query.timeRange);
-        let query = tutorSessions.createQueryBuilder('session')
-            .leftJoinAndSelect('session.tutor', 'tutor')
-            .leftJoinAndSelect('session.students', 'students');
-        query = filterTimeRange(timeRange, query);
-        query.getMany()
+        tutorSessions.findSessionsInTimeRange(timeRange)
             .then(sessions => {
                 res.render('tutor_sessions', {
-                    ...nav.locals(req),
-                    timeRange,
-                    sessions,
+                    ...nav.locals(req), timeRange, sessions,
                 });
             }).catch(next);
     });
@@ -76,15 +70,18 @@ function createRouter(repositories: Repositories) {
                 .catch(next);
         });
 
-    router.post(nav.tutorSessions.href + '/:tutor_session/delete',
+    router.post(nav.tutorSessions.href + '/:tutor_session/cancel',
         ensureLoggedIn(UserRole.Student), (req, res, next) => {
             const session = (req as any).tutorSession as TutorSession;
             if (!session.userCanModify(req.user)) {
                 return res.status(403).send('You are not permitted to delete TutorSession with id ' + session.id);
             }
-            tutorSessions.deleteById(session.id)
+            if (!session.cancel()) {
+                return res.status(400).send('That section has already been cancelled');
+            }
+            tutorSessions.save(session)
                 .then(() => {
-                    res.redirect(nav.tutorSessions.href);
+                    res.redirect(session.url);
                 }).catch(next);
         });
 

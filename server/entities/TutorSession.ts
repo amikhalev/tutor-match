@@ -59,6 +59,9 @@ export class TutorSession {
 
     studentCount: number;
 
+    @Column('datetime', { nullable: true })
+    cancelledAt: Date | null = null;
+
     get title() {
         return (this.subject) ? `Tutoring session over ${this.subject}` : 'Tutoring session';
     }
@@ -108,6 +111,18 @@ export class TutorSession {
 
     userIsSignedUpFor(user: User): boolean {
         return !!this.students && !!this.students.find(student => student.id === user.id);
+    }
+
+    get isCancelled() {
+        return !!this.cancelledAt;
+    }
+
+    cancel(): boolean {
+        if (this.cancelledAt) {
+            return false;
+        }
+        this.cancelledAt = new Date();
+        return true;
     }
 
     @AfterLoad()

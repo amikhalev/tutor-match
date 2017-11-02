@@ -1,25 +1,36 @@
-.card
+-
+    let cardClass;
+    if (session.isCancelled)
+        cardClass = 'border-danger';
+.card(class=cardClass)
     .card-body
-        h4.card-title
-            a(href=session.url)= session.title
+        h4.card-title= session.title
+            if session.isCancelled
+                span.h6.ml-2.badge.badge-danger Cancelled
         h6.card-subtitle.mb-2.text-muted Tutored by <b>#{session.tutor ? session.tutor.displayName : 'unknown'}</b>
         .card-text: ul
             li At <b>#{session.school || "Unknown school"}</b> in the <b>#{session.location || 'unknown location'}</b>
             li #{session.startVerb} <b>#{session.startTimeCalendar}</b>, for <b>#{session.durationHuman}</b>
             if showing_single && user && session.userCanModify(user)
-                li Students:
+                li Signed up
                     ul
                         each student in session.students
                             li= student.displayName
             else
-                li <b>#{session.studentCount}</b> out of <b>#{session.maxStudents || 'unlimited'}</b> students signed up
-        div.card-buttons
+                li
+                    <b>#{session.studentCount}</b> students signed up
+                    if session.maxStudents
+                        |  (max. of <b>#{session.maxStudents}</b>)
+        .card-buttons
+            if !showing_single
+                a.btn.btn-secondary(href=session.url) Details
             if user && session.userIsSignedUpFor(user)
-                button.btn.btn-primary(disabled) You are already signed up
+                button.btn.btn-primary(disabled) Signed up
             else
                 form(action=session.url + "/sign_up" method="POST")
                     button.btn.btn-primary(type="submit") Sign up
             if showing_single && user && session.userCanModify(user)
-                a.btn.btn-secondary Edit
-                form(action=session.url + "/delete", method="POST")
-                    button.btn.btn-danger(type="submit") Delete
+                a.btn.btn-secondary(href="#") Edit
+                form(action=session.url + "/cancel", method="POST")
+                    button.btn.btn-danger(type="submit", disabled=session.isCancelled)
+                        = session.isCancelled ? 'Cancelled' : 'Cancel'
