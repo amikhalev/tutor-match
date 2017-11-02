@@ -6,8 +6,12 @@ block content
             h1.card-title Edit
             br
             p Biography
-            form.form.my-md-0(action=theUser.url + '/edit', method='POST')
-                textarea(name="bio", cols="50", rows="10")
+            form.form.my-md-0(action=theUser.url + "/edit",method='POST')
+                - 
+                    let text;
+                    if(theUser.biography)
+                        text = theUser.biography
+                textarea(name="bio", cols="50", rows="10")= text
                 br
                 button.btn.btn-primary(type="submit") Submit
             

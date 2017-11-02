@@ -66,14 +66,15 @@ function createRouter(repositories: Repositories) {
     router.post("/profile/:user_id/edit", ensureLoggedIn(UserRole.Student), (req, res) => {
         if(req.user.id == ((req as any).targetUser as User).id || req.user.role == UserRole.Admin) {
             if(req.body.bio) {
-                req.user.bio = req.body.bio;
+                console.info("post "+req.body.bio);
+                req.user.biography = req.body.bio;
             }
             users.save(req.user);
         }
-        res.redirect("/");
+        res.redirect(((req as any).targetUser as User).url);
     });
     router.get("/profile/:user_id/edit", ensureLoggedIn(UserRole.Student), (req, res) => {
-        if(nav.locals(req).user.id == ((req as any).targetUser as User).id || nav.locals(req).user.role == UserRole.Admin) {
+        if(req.user.id == ((req as any).targetUser as User).id || req.user.role == UserRole.Admin) {
             res.render('profile_edit', { ...nav.locals(req), theUser: (req as any).targetUser as User});
         } else {
             res.redirect('/');

@@ -34,4 +34,8 @@ export class User {
     get roleName() {
         return UserRole[this.role];
     }
+
+    get url() {
+        return '/profile/' + this.id
+    }
 }
