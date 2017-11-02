@@ -57,7 +57,7 @@ function createRouter(repositories: Repositories) {
 
     router.get(nav.signUpToTutor.href,
         ensureLoggedIn(nav.signUpToTutor.minimumRole), (req, res) => {
-            const session = TutorSession.newSessionData();
+            const session = TutorSession.newSessionData(req.user);
             res.render('new_tutor_session', { ...nav.locals(req), session });
         });
 
