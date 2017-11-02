@@ -7,18 +7,12 @@ block content
       heading = theUser.displayName
     else
       heading = "No user found"
-  .jumbotron
-    h2= heading
-    if (theUser)
-      p #{theUser.roleName}
-      br
-      -
-        let bio;
-        if (theUser.biography)
-          bio = theUser.biography
-        else
-          bio = "No description provided."
-      p= bio
-  if(user)
-    if(user.id == theUser.id)
-      a.btn.btn-primary(href='#') Edit
+  .card
+    .card-body
+      h1.card-title= heading
+      if (theUser)
+        .card-subtitle.mb-2.text-muted #{theUser.roleName}
+        br
+        p= theUser.biography || "No description provided"
+        if(user && user.id == theUser.id)
+          a.btn.btn-primary(href='/profile/'+theUser.id+'/edit') Edit

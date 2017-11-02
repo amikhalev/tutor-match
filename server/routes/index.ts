@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { ensureLoggedIn } from '../config/auth';
-import { TutorSession, UserRole } from '../entities';
+import { TutorSession, UserRole, User } from '../entities';
 import { Repositories } from '../repositories';
 
 import * as nav from './nav';
@@ -30,6 +30,19 @@ function createRouter(repositories: Repositories) {
             .catch(err => next(err));
     });
 
+    router.param('user_id', (req, res, next, value) => {
+        let userPromise = users.findOneById(value);
+        userPromise.then((theuser) => {
+            if(theuser) {
+                (req as any).targetUser = theuser;
+                next();
+            } else {
+                res.status(404).send(`profile id "${value}" not found`);
+            }
+        })
+        .catch(err => next(err));
+    });
+
     router.get(nav.tutorSessions.href, ensureLoggedIn(nav.tutorSessions.minimumRole), (req, res, next) => {
         const timeRange = parseTimeRange(req.query.timeRange);
         let query = tutorSessions.createQueryBuilder('session')
@@ -46,19 +59,25 @@ function createRouter(repositories: Repositories) {
             }).catch(next);
     });
 
-    router.get("/profile/:userId", (req, res) => {
-        let userPromise = users.findOneById(req.params.userId);
-        if(!userPromise) {
-            res.render('profile', {...nav.locals(req)});
-            return;
-        }
-        userPromise.then((value) => {
-            if(value) {
-                res.render('profile', { ...nav.locals(req), theUser: value});
-            } else {
-                res.render('profile', {...nav.locals(req)});
+    router.get("/profile/:user_id", (req, res) => {
+        res.render('profile', { ...nav.locals(req), theUser: (req as any).targetUser as User});
+    });
+
+    router.post("/profile/:user_id/edit", ensureLoggedIn(UserRole.Student), (req, res) => {
+        if(req.user.id == ((req as any).targetUser as User).id || req.user.role == UserRole.Admin) {
+            if(req.body.bio) {
+                req.user.bio = req.body.bio;
             }
-        });
+            users.save(req.user);
+        }
+        res.redirect("/");
+    });
+    router.get("/profile/:user_id/edit", ensureLoggedIn(UserRole.Student), (req, res) => {
+        if(nav.locals(req).user.id == ((req as any).targetUser as User).id || nav.locals(req).user.role == UserRole.Admin) {
+            res.render('profile_edit', { ...nav.locals(req), theUser: (req as any).targetUser as User});
+        } else {
+            res.redirect('/');
+        }
     });
       
     router.get(nav.tutorSessions.href + '/:tutor_session',

@@ -1,0 +1,13 @@
+extends layout.pug
+
+block content
+    .card
+        .card-body
+            h1.card-title Edit
+            br
+            p Biography
+            form.form.my-md-0(action=theUser.url + '/edit', method='POST')
+                textarea(name="bio", cols="50", rows="10")
+                br
+                button.btn.btn-primary(type="submit") Submit
+            
