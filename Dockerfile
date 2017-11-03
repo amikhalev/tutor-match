@@ -1,6 +1,6 @@
 FROM node:alpine
 
-RUN npm install -g yarn nodemon
+RUN npm install -g yarn
 ADD package.json yarn.lock /app/
 WORKDIR /app/
 RUN yarn install --production --verbose
