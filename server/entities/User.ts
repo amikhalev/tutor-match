@@ -39,13 +39,13 @@ export class User {
         return '/profile/' + this.id
     }
 
-    set bio(bio: string) {
-        if(bio && bio.length >= 250) {
-            this.bio = bio;
+    updateFromData(body : any) {
+        if(body.bio && body.bio.length <= 250) {
+            this.biography = body.bio;
         }
     }
 
     userCanModify(user: User): boolean {
-        return this.id == user.id || user.role == UserRole.Admin;
+        return this.id == user.id || user.role >= UserRole.Teacher;
     }
 }

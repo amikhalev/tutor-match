@@ -65,7 +65,7 @@ function createRouter(repositories: Repositories) {
 
     router.post("/profile/:user_id/edit", ensureLoggedIn(UserRole.Student), (req, res) => {
         if(((req as any).targetUser as User).userCanModify(req.user)) {
-            req.user.bio(req.body.bio);
+            req.user.updateFromData(req.body);
             users.save(req.user);
         }
         res.redirect(((req as any).targetUser as User).url);
