@@ -23,7 +23,7 @@
                         |  (max. of <b>#{session.maxStudents}</b>)
         .card-buttons
             if !showing_single
-                a.btn.btn-secondary(href=session.url) Details
+                a.btn.btn-outline-secondary(href=session.url) Details
             if user && session.userIsSignedUpFor(user)
                 button.btn.btn-primary(disabled) Signed up
             else

@@ -1,7 +1,9 @@
 html
     head
         meta(charset='utf-8')
+        meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
         meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+
         title TutorMatch - #{title || "Page"}
         script(type='text/javascript' src='/static/jquery/jquery.js')
         script(type='text/javascript' src='/static/popper.js/popper.js')
@@ -13,8 +15,11 @@ html
     body
         .container
             nav.navbar.navbar-expand-lg.navbar-light.bg-light.rounded
-                a.navbar-brand(href='#') TutorMatch
-                .collapse.navbar-collapse
+                a.navbar-brand(href='/') TutorMatch
+                button.navbar-toggler(type="button", data-toggle="collapse", data-target="#navbarSupportedContent",
+                 aria-controls="navbarSupportedContent", aria-expanded="false", aria-label="Toggle navigation")
+                    span.navbar-toggler-icon
+                .collapse.navbar-collapse#navbarSupportedContent
                     ul.navbar-nav.mr-auto
                         each item in nav
                             li.nav-item(class={active: item.active})
