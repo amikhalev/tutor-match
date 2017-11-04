@@ -70,6 +70,7 @@ function createRouter(repositories: Repositories) {
         }
         res.redirect(((req as any).targetUser as User).url);
     });
+
     router.get("/profile/:user_id/edit", ensureLoggedIn(UserRole.Student), (req, res) => {
         if(((req as any).targetUser as User).userCanModify(req.user)) {
             res.render('profile_edit', { ...nav.locals(req), theUser: (req as any).targetUser as User});
@@ -77,7 +78,7 @@ function createRouter(repositories: Repositories) {
             res.redirect('/');
         }
     });
-      
+
     router.post(nav.tutorSessions.href, ensureLoggedIn(UserRole.Tutor), (req, res, next) => {
         const tutorSession = TutorSession.parseFormData(req.body);
         tutorSession.tutor = req.user;

@@ -20,13 +20,13 @@ html
                             li.nav-item(class={active: item.active})
                                 a.nav-link(href=item.href)= item.title
                     form.form-inline.my-md-0
-                        if user
-                            div.nav-item
-                                a.nav-link.fa.fa-user.fa-fw(href='/profile/' + user.id)
                         if !user
                             a.btn.btn-primary(href='/auth/google') Login
                         else
                             .nav-item Welcome, #{user.displayName}
-                            a.btn.btn-danger.ml-2(href='/logout') Log out
+                            a.btn.btn-outline-secondary.ml-2.px-2(href='/profile/' + user.id, aria-label="Profile")
+                                i.fa.fa-user.fa-fw(aria-hidden=true)
+                            a.btn.btn-danger.ml-2.px-2(href='/logout', aria-label= "Log out")
+                                .i.fa.fa-sign-out.fa-fw(aria-hidden="aria-hidden")
             main(role='main')
                 block content
