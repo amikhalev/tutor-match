@@ -19,8 +19,7 @@ export class TutorSession {
 
     static parseFormData(data: any, existingSession?: TutorSession): TutorSession {
         const session = existingSession || new TutorSession();
-        session.startTime = moment((data.date || session.startTime_date) + ' ' + (data.time || session.startTime_time),
-            'L HH:mmA').toDate();
+        session.startTime = moment(data.startTime || session.startTime_string, 'L LT').toDate();
         session.durationMinutes = +(data.durationMinutes || session.durationMinutes || 0);
         session.location = (data.location || session.location || null);
         session.school = (data.school || session.school || null);
@@ -66,12 +65,8 @@ export class TutorSession {
         return (this.subject) ? `Tutoring session over ${this.subject}` : 'Tutoring session';
     }
 
-    get startTime_date() {
-        return moment(this.startTime).format('L');
-    }
-
-    get startTime_time() {
-        return moment(this.startTime).format('HH:mmA');
+    get startTime_string() {
+        return moment(this.startTime).format('L LT');
     }
 
     get startTimeCalendar() {
