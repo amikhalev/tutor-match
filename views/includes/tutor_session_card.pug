@@ -11,16 +11,14 @@
         .card-text: ul
             li At <b>#{session.school || "Unknown school"}</b> in the <b>#{session.location || 'unknown location'}</b>
             li #{session.startVerb} <b>#{session.startTimeCalendar}</b>, for <b>#{session.durationHuman}</b>
-            if showing_single && user && session.userCanModify(user)
-                li Signed up
+            li
+                <b>#{session.studentCount}</b> students signed up
+                if session.maxStudents
+                    |  (max. of <b>#{session.maxStudents}</b>)
+                if showing_single && user && session.userCanModify(user)
                     ul
                         each student in session.students
                             li= student.displayName
-            else
-                li
-                    <b>#{session.studentCount}</b> students signed up
-                    if session.maxStudents
-                        |  (max. of <b>#{session.maxStudents}</b>)
         .card-buttons
             if !showing_single
                 a.btn.btn-outline-secondary(href=session.url) Details
@@ -30,7 +28,7 @@
                 form(action=session.url + "/sign_up" method="POST")
                     button.btn.btn-primary(type="submit") Sign up
             if showing_single && user && session.userCanModify(user)
-                a.btn.btn-secondary(href="#") Edit
+                a.btn.btn-secondary(href=session.url + "/edit") Edit
                 form(action=session.url + "/cancel", method="POST")
                     button.btn.btn-danger(type="submit", disabled=session.isCancelled)
                         = session.isCancelled ? 'Cancelled' : 'Cancel'

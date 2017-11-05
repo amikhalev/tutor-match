@@ -61,6 +61,28 @@ function createRouter(repositories: Repositories) {
         res.render('tutor_session', { ...nav.locals(req), title: session.title, session });
     });
 
+    router.get(nav.tutorSessions.href + '/:tutor_session/edit',
+        ensureLoggedIn(), (req, res, next) => {
+            const session = (req as any).tutorSession as TutorSession;
+            if (!session.userCanModify(req.user)) {
+                return res.status(403).send('You do not have permission to edit tutor session ' + session.id);
+            }
+            res.render('edit_tutor_session', { ...nav.locals(req), title: 'Editing ' + session.title , session });
+        });
+
+    router.post(nav.tutorSessions.href + '/:tutor_session/edit',
+        ensureLoggedIn(), (req, res, next) => {
+            let session = (req as any).tutorSession as TutorSession;
+            if (!session.userCanModify(req.user)) {
+                return res.status(403).send('You do not have permission to edit tutor session ' + session.id);
+            }
+            session = TutorSession.parseFormData(req.body, session);
+            tutorSessions.save(session)
+                .then(() => {
+                    res.redirect(session.url);
+                }).catch(next);
+        });
+
     router.post(nav.tutorSessions.href + '/:tutor_session/sign_up',
         ensureLoggedIn(UserRole.Student), (req, res, next) => {
             const session = (req as any).tutorSession as TutorSession;

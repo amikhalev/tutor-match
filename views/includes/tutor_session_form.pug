@@ -1,0 +1,49 @@
+.row
+  .form-group.col-lg-4
+    label(for="session-subject") Subject
+    .input-group
+      input.form-control(id="session-subject", name="subject", type="text", value=session.subject)
+  .form-group.col-md-6.col-lg-4
+    label(for="session-start-time") Start time
+    .input-group.date.session-start-time
+      input.form-control(id="session-start-time", name="startTime", type="text", required, value=session.startTime_string)
+      .input-group-addon: i.fa.fa-calendar.fa-fw
+  .form-group.col-md-6.col-lg-4
+    label(for="session-duration") Duration (minutes)
+    .input-group
+      input.form-control(id="session-duration", name="durationMinutes", type="number", required, min=0, step=.5,
+      value=session.durationMinutes)
+      .input-group-addon: i.fa.fa-clock-o.fa-fw
+  // TODO this is harder than it looks
+  if !new_session && false
+    .form-group.col-12
+      label Tutor
+      input.form-control(name="tutor", type="text", required, value=session.tutor ? session.tutor.displayName : "")
+  .form-group.col-md-6.col-lg-5
+    label(for="session-school") School
+    .input-group
+      input.form-control(id="session-school", name="school", type="text", required, value=session.school)
+      .input-group-addon: i.fa.fa-graduation-cap.fa-fw
+  .form-group.col-md-6.col-lg-5
+    label(for="session-location") Location
+    .input-group
+      input.form-control(id="session-location", name="location", type="text", required, value=session.location)
+      .input-group-addon: i.fa.fa-map-marker.fa-fw
+  .form-group.col-lg-2
+    label(for="session-max-students") Max. Students
+    .input-group
+      input.form-control(id="session-max-students", name="maxStudents", type="number", min=0, value=session.maxStudents)
+      .input-group-addon: i.fa.fa-users.fa-fw
+    small.form-text.text-muted 0 means unlimited
+
+  script(type="text/javascript").
+    $(function () {
+      $('.session-start-time').datetimepicker({
+        icons: {
+          time: "fa fa-clock-o",
+          date: "fa fa-calendar",
+          up: "fa fa-arrow-up",
+          down: "fa fa-arrow-down"
+        }
+      });
+    });

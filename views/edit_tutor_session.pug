@@ -7,12 +7,13 @@ block head
 
 block content
   .jumbotron
-    h1 Post a new tutoring session
-    form.form(action="/tutor_sessions" method="POST")
-      - const new_session = true;
+    h1 Edit a tutoring session
+    form.form(action="/tutor_sessions/" + session.id + "/edit" method="POST")
       include includes/tutor_session_form
-      button.btn.btn-success(type="submit") Create
+      .card-buttons
+        button.btn.btn-primary(type="submit") Save
+        a.btn.btn-danger(href=session.url) Cancel
     script(type="text/javascript").
       $(function() {
-        $('.session-start-time input').val(moment().format('L LT'))
+      //  $('.session-start-time input').val(moment().format('L LT'))
       });
