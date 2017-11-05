@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { ensureLoggedIn } from '../config/auth';
-import { TutorSession, UserRole } from '../entities';
+import { TutorSession, UserRole, User } from '../entities';
 import { Repositories } from '../repositories';
 import { filterTimeRange, parseTimeRange } from '../timeRange';
 
@@ -10,7 +10,7 @@ import * as nav from './nav';
 function createRouter(repositories: Repositories) {
     const router = Router();
 
-    const { tutorSessions } = repositories;
+    const { users, tutorSessions } = repositories;
 
     router.get(nav.home.href, ensureLoggedIn(nav.home.minimumRole), (req, res) => {
         console.log('user: ', req.user && req.user.displayName);
@@ -30,6 +30,19 @@ function createRouter(repositories: Repositories) {
             .catch(err => next(err));
     });
 
+    router.param('user_id', (req, res, next, value) => {
+        let userPromise = users.findOneById(value);
+        userPromise.then((theuser) => {
+            if(theuser) {
+                (req as any).targetUser = theuser;
+                next();
+            } else {
+                res.status(404).send(`profile id "${value}" not found`);
+            }
+        })
+        .catch(err => next(err));
+    });
+
     router.get(nav.tutorSessions.href, ensureLoggedIn(nav.tutorSessions.minimumRole), (req, res, next) => {
         const timeRange = parseTimeRange(req.query.timeRange);
         tutorSessions.findSessionsInTimeRange(timeRange)
@@ -38,6 +51,26 @@ function createRouter(repositories: Repositories) {
                     ...nav.locals(req), timeRange, sessions,
                 });
             }).catch(next);
+    });
+
+    router.get("/profile/:user_id", (req, res) => {
+        res.render('profile', { ...nav.locals(req), theUser: (req as any).targetUser as User});
+    });
+
+    router.post("/profile/:user_id/edit", ensureLoggedIn(UserRole.Student), (req, res) => {
+        if(((req as any).targetUser as User).userCanModify(req.user)) {
+            req.user.updateFromData(req.body);
+            users.save(req.user);
+        }
+        res.redirect(((req as any).targetUser as User).url);
+    });
+
+    router.get("/profile/:user_id/edit", ensureLoggedIn(UserRole.Student), (req, res) => {
+        if(((req as any).targetUser as User).userCanModify(req.user)) {
+            res.render('profile_edit', { ...nav.locals(req), theUser: (req as any).targetUser as User});
+        } else {
+            res.redirect('/');
+        }
     });
 
     router.post(nav.tutorSessions.href, ensureLoggedIn(UserRole.Tutor), (req, res, next) => {
@@ -109,5 +142,4 @@ function createRouter(repositories: Repositories) {
 
     return router;
 }
-
 export { createRouter };

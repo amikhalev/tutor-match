@@ -25,10 +25,27 @@ export class User {
     @Column('varchar', { nullable: true })
     familyName: string | null;
 
+    @Column('varchar', { nullable: true })
+    biography: string | null;
+
     @Column('int', { length: 2 })
     role: UserRole = UserRole.Student;
 
     get roleName() {
         return UserRole[this.role];
+    }
+
+    get url() {
+        return '/profile/' + this.id
+    }
+
+    updateFromData(body : any) {
+        if(body.bio && body.bio.length <= 250) {
+            this.biography = body.bio;
+        }
+    }
+
+    userCanModify(user: User): boolean {
+        return this.id == user.id || user.role >= UserRole.Teacher;
     }
 }
