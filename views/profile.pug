@@ -1,9 +1,10 @@
 extends layout.pug
 
 block content
+  h1 User profile
   .card
     .card-body
-      h1.card-title= theUser.displayName
+      h3.card-title= theUser.displayName
       if (theUser)
         .card-subtitle.mb-2.text-muted= theUser.roleName
         p.card-text= theUser.biography || "No description provided"

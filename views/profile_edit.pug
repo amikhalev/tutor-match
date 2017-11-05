@@ -1,12 +1,13 @@
 extends layout.pug
 
 block content
+    h1 Edit user profile
     .card
         .card-body
-            h1.card-title Edit
-            form.form.my-md-0(action=theUser.url + "/edit",method='POST')
+            h3.card-title= theUser.displayName
+            form.form.my-md-0(action=theUser.url + "/edit", method='POST')
                 .form-group
-                    label(for="bio") Biography
-                    textarea.form-control(name="bio", cols="50", rows="5", maxlength="250")= theUser.biography
+                    label(for="bio") Description
+                    textarea.form-control(id="bio", name="bio", cols="50", rows="5", maxlength="250")= theUser.biography
                 button.btn.btn-primary(type="submit") Submit
             
