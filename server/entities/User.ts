@@ -36,16 +36,16 @@ export class User {
     }
 
     get url() {
-        return '/profile/' + this.id
+        return '/profile/' + this.id;
     }
 
-    updateFromData(body : any) {
-        if(body.bio && body.bio.length <= 250) {
+    updateFromData(body: any) {
+        if (body.bio && body.bio.length <= 250) {
             this.biography = body.bio;
         }
     }
 
     userCanModify(user: User): boolean {
-        return this.id == user.id || user.role >= UserRole.Teacher;
+        return this.id === user.id || user.role >= UserRole.Teacher;
     }
 }

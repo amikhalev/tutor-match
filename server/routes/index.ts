@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
 import { ensureLoggedIn } from '../config/auth';
-import { TutorSession, UserRole, User } from '../entities';
+import { TutorSession, User, UserRole } from '../entities';
 import { Repositories } from '../repositories';
-import { filterTimeRange, parseTimeRange } from '../timeRange';
+import { parseTimeRange } from '../timeRange';
 
 import * as nav from './nav';
 
@@ -31,9 +31,8 @@ function createRouter(repositories: Repositories) {
     });
 
     router.param('user_id', (req, res, next, value) => {
-        let userPromise = users.findOneById(value);
-        userPromise.then((theuser) => {
-            if(theuser) {
+        users.findOneById(value).then( theuser => {
+            if (theuser) {
                 (req as any).targetUser = theuser;
                 next();
             } else {
@@ -53,20 +52,20 @@ function createRouter(repositories: Repositories) {
             }).catch(next);
     });
 
-    router.get("/profile/:user_id", (req, res) => {
+    router.get('/profile/:user_id', (req, res) => {
         res.render('profile', { ...nav.locals(req), theUser: (req as any).targetUser as User});
     });
 
-    router.post("/profile/:user_id/edit", ensureLoggedIn(UserRole.Student), (req, res) => {
-        if(((req as any).targetUser as User).userCanModify(req.user)) {
+    router.post('/profile/:user_id/edit', ensureLoggedIn(UserRole.Student), (req, res) => {
+        if (((req as any).targetUser as User).userCanModify(req.user)) {
             req.user.updateFromData(req.body);
             users.save(req.user);
         }
         res.redirect(((req as any).targetUser as User).url);
     });
 
-    router.get("/profile/:user_id/edit", ensureLoggedIn(UserRole.Student), (req, res) => {
-        if(((req as any).targetUser as User).userCanModify(req.user)) {
+    router.get('/profile/:user_id/edit', ensureLoggedIn(UserRole.Student), (req, res) => {
+        if (((req as any).targetUser as User).userCanModify(req.user)) {
             res.render('profile_edit', { ...nav.locals(req), theUser: (req as any).targetUser as User});
         } else {
             res.redirect('/');

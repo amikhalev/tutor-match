@@ -1,6 +1,4 @@
-import { Connection, Repository } from 'typeorm';
-
-import * as e from '../entities';
+import { Connection } from 'typeorm';
 
 import { TutorSessionRepository } from './TutorSessionRepository';
 import { UserRepository } from './UserRepository';
