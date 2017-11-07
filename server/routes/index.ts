@@ -7,6 +7,15 @@ import { parseTimeRange } from '../timeRange';
 
 import * as nav from './nav';
 
+declare global {
+    namespace Express {
+        interface Request {
+            tutorSession?: TutorSession;
+            targetUser?: User;
+        }
+    }
+}
+
 function createRouter(repositories: Repositories) {
     const router = Router();
 
@@ -21,7 +30,7 @@ function createRouter(repositories: Repositories) {
         tutorSessions.findOneById(value, { relations: [ 'tutor', 'students' ] })
             .then(session => {
                 if (session) {
-                    (req as any).tutorSession = session;
+                    req.tutorSession = session;
                     next();
                 } else {
                     res.status(404).send(`tutor_session id "${value}" not found`);
@@ -33,7 +42,7 @@ function createRouter(repositories: Repositories) {
     router.param('user_id', (req, res, next, value) => {
         users.findOneById(value).then( theuser => {
             if (theuser) {
-                (req as any).targetUser = theuser;
+                req.targetUser = theuser;
                 next();
             } else {
                 res.status(404).send(`profile id "${value}" not found`);
@@ -53,23 +62,28 @@ function createRouter(repositories: Repositories) {
     });
 
     router.get('/profile/:user_id', (req, res) => {
-        res.render('profile', { ...nav.locals(req), theUser: (req as any).targetUser as User});
+        res.render('profile', { ...nav.locals(req), theUser: req.targetUser});
     });
 
-    router.post('/profile/:user_id/edit', ensureLoggedIn(UserRole.Student), (req, res) => {
-        if (((req as any).targetUser as User).userCanModify(req.user)) {
-            req.user.updateFromData(req.body);
-            users.save(req.user);
+    router.post('/profile/:user_id/edit', ensureLoggedIn(UserRole.Student), (req, res, next) => {
+        if (!req.targetUser!.userCanModify(req.user)) {
+            res.status(403).send(`You do not have permission to edit user id ${req.targetUser!.id}`);
+            return next();
         }
-        res.redirect(((req as any).targetUser as User).url);
+        req.user.updateFromData(req.body);
+        users.save(req.user)
+            .then(() => {
+                res.redirect(req.targetUser!.url);
+                next();
+            }).catch(next);
     });
 
     router.get('/profile/:user_id/edit', ensureLoggedIn(UserRole.Student), (req, res) => {
-        if (((req as any).targetUser as User).userCanModify(req.user)) {
-            res.render('profile_edit', { ...nav.locals(req), theUser: (req as any).targetUser as User});
-        } else {
-            res.redirect('/');
+        if (!req.targetUser!.userCanModify(req.user)) {
+            res.status(403).send(`You do not have permission to edit user id ${req.targetUser!.id}`);
+            return;
         }
+        res.render('profile_edit', { ...nav.locals(req), theUser: req.targetUser});
     });
 
     router.post(nav.tutorSessions.href, ensureLoggedIn(UserRole.Tutor), (req, res, next) => {
@@ -89,13 +103,13 @@ function createRouter(repositories: Repositories) {
 
     router.get(nav.tutorSessions.href + '/:tutor_session',
         ensureLoggedIn(nav.tutorSessions.minimumRole), (req, res) => {
-        const session = (req as any).tutorSession as TutorSession;
+        const session = req.tutorSession!;
         res.render('tutor_session', { ...nav.locals(req), title: session.title, session });
     });
 
     router.get(nav.tutorSessions.href + '/:tutor_session/edit',
         ensureLoggedIn(), (req, res, next) => {
-            const session = (req as any).tutorSession as TutorSession;
+            const session = req.tutorSession!;
             if (!session.userCanModify(req.user)) {
                 return res.status(403).send('You do not have permission to edit tutor session ' + session.id);
             }
@@ -104,7 +118,7 @@ function createRouter(repositories: Repositories) {
 
     router.post(nav.tutorSessions.href + '/:tutor_session/edit',
         ensureLoggedIn(), (req, res, next) => {
-            let session = (req as any).tutorSession as TutorSession;
+            let session = req.tutorSession!;
             if (!session.userCanModify(req.user)) {
                 return res.status(403).send('You do not have permission to edit tutor session ' + session.id);
             }
@@ -117,7 +131,7 @@ function createRouter(repositories: Repositories) {
 
     router.post(nav.tutorSessions.href + '/:tutor_session/sign_up',
         ensureLoggedIn(UserRole.Student), (req, res, next) => {
-            const session = (req as any).tutorSession as TutorSession;
+            const session = req.tutorSession!;
             session.students!.push(req.user);
             repositories.tutorSessions.save(session)
                 .then(() => { res.redirect(session.url); })
@@ -126,7 +140,7 @@ function createRouter(repositories: Repositories) {
 
     router.post(nav.tutorSessions.href + '/:tutor_session/cancel',
         ensureLoggedIn(UserRole.Student), (req, res, next) => {
-            const session = (req as any).tutorSession as TutorSession;
+            const session = req.tutorSession!;
             if (!session.userCanModify(req.user)) {
                 return res.status(403).send('You are not permitted to delete TutorSession with id ' + session.id);
             }
