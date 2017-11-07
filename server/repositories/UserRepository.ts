@@ -1,7 +1,9 @@
 import * as Passport from 'passport';
 import { EntityRepository, Repository } from 'typeorm';
 
-import { User } from '../entities/User';
+import { User, UserRole } from '../entities/User';
+
+import { School } from '../entities/School';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -14,6 +16,22 @@ export class UserRepository extends Repository<User> {
                 user.displayName = profile.displayName;
                 user.givenName = profile.name ? profile.name.givenName : '';
                 user.familyName = profile.name ? profile.name.familyName : '';
+                if (profile.emails) {
+                    profile.emails.forEach(element => {
+                    if (element.type === 'account' && user) {
+                        user.email = element.value;
+                    }
+                    });
+                }
+            } else {
+                //temporary stuff :)
+                if (user.displayName.startsWith('Avery')) {
+                user.role = UserRole.Admin;
+                }
+                const school = new School();
+                school.name = 'Test School';
+                manager.save(school);
+                user.school = school;
             }
             return manager.save(user);
         });
