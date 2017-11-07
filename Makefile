@@ -1,12 +1,14 @@
 NODE_MODULES_BIN := ./node_modules/.bin
 NPM := npm
+NODE := ./node.sh
 TSC := $(NODE_MODULES_BIN)/tsc
+TSLINT := $(NODE_MODULES_BIN)/tslint
 DOCKER_COMPOSE := docker-compose
 
 SERVER_SRCS := $(wildcard server/*.ts) $(wildcard server/*/*.ts)
-SERVER_OUTS := $(subst server/,dist/,$(SERVER_SRCS:.ts=))
+SERVER_OUTS := $(subst server/,dist/,$(SERVER_SRCS:.ts=.js))
 
-.PHONY: all clean install install-prod build-server build build-docker
+.PHONY: all clean install install-prod build-server watch-server build build-docker
 
 all: build
 
@@ -29,8 +31,20 @@ node_modules: package.json
 # Builds the server code (using typescript)
 build-server: $(addsuffix .js,$(SERVER_OUTS))
 
-$(addsuffix %js, $(SERVER_OUTS)): node_modules server/tsconfig.json $(SERVER_SRCS)
+$(SERVER_OUTS:.js=%js): node_modules server/tsconfig.json $(SERVER_SRCS)
 	$(TSC) --project server
+
+watch-server: node_modules
+	$(TSC) --project server --watch
+
+start: $(SERVER_OUTS) node_modules
+	$(NODE) .
+
+lint: $(SERVER_SRCS) node_modules
+	$(TSLINT) --project server --format verbose
+
+lint-fix: $(SERVER_SRCS) node_modules
+	$(TSLINT) --project server --format verbose --fix
 
 # Builds the entire app (excluding docker containers)
 build: build-server
@@ -50,5 +64,5 @@ start-docker: build
 # files for changes. When the files are changed, they will be compiled and
 # then the server will restart.
 start-docker-dev: node_modules
-	$(TSC) --project server --watch &
+	make watch-server &
 	$(DOCKER_COMPOSE) -f docker-compose.dev.yml up web
