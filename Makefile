@@ -3,6 +3,8 @@ NPM := npm
 NODE := ./node.sh
 TSC := $(NODE_MODULES_BIN)/tsc
 TSLINT := $(NODE_MODULES_BIN)/tslint
+NODEMON := $(NODE) $(NODE_MODULES_BIN)/nodemon
+NODEMON_FLAGS := -e $(NODE) --inspect=9229
 DOCKER_COMPOSE := docker-compose
 
 SERVER_SRCS := $(wildcard server/*.ts) $(wildcard server/*/*.ts)
@@ -39,6 +41,10 @@ watch-server: node_modules
 
 start: $(SERVER_OUTS) node_modules
 	$(NODE) .
+
+start-watch:
+	make watch-server &
+	$(NODEMON) $(NODEMON_FLAGS) .
 
 lint: $(SERVER_SRCS) node_modules
 	$(TSLINT) --project server --format verbose
