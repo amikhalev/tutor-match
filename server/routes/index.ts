@@ -70,8 +70,8 @@ function createRouter(repositories: Repositories) {
             res.status(403).send(`You do not have permission to edit user id ${req.targetUser!.id}`);
             return next();
         }
-        req.user.updateFromData(req.body);
-        users.save(req.user)
+        req.targetUser!.updateFromData(req.body);
+        users.save(req.targetUser!)
             .then(() => {
                 res.redirect(req.targetUser!.url);
                 next();
