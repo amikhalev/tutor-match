@@ -2,7 +2,7 @@
     let cardClass;
     if (session.isCancelled)
         cardClass = 'border-danger';
-.card(class=cardClass)
+.card.tutor-session(class=cardClass, data-session-data=JSON.stringify(session))
     .card-body
         h4.card-title= session.title
             if session.isCancelled

@@ -1,0 +1,34 @@
+.card.mb-3
+  a.card-header(role="tab", data-toggle="collapse", href="#filters")
+    h5.mb-0 Filters
+  .collapse.show#filters: .card-body
+    .card-text
+      form.form#filters-form(action="/tutor_sessions", method="GET")
+        .row
+          .form-group.col-3
+            label(for="filter-dateRange") Date range
+            select.form-control#filter-dateRange
+              option(value="all") All dates
+              option(value="today", selected=(query.dateRange === "today")) Today
+              option(value="this_week", selected=(query.dateRange === "this_week")) This week
+          .form-group.col-3
+            label(for="filter-timeRange") Time range
+            select.form-control#filter-timeRange
+              option(value="all") All times
+              option(value="morning") Morning
+              option(value="lunch") Lunch
+              option(value="after_school") After school
+          .col-6
+            .form-check.form-check-inline: label.form-check-label
+              input.form-check-input#filter-cancelled(type="checkbox")
+              | Cancelled
+            .form-check.form-check-inline: label.form-check-label
+              input.form-check-input#filter-tutoring(type="checkbox")
+              | I am tutoring
+            .form-check.form-check-inline: label.form-check-label
+              input.form-check-input#filter-attending(type="checkbox")
+              | I am signed up
+        .card-buttons
+          button.btn.btn-primary#filters-apply(type="submit") Apply
+          button.btn.btn-seconadry#filters-reset(type="reset") Reset
+
