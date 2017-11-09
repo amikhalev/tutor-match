@@ -37,13 +37,4 @@
     small.form-text.text-muted 0 means unlimited
 
   script(type="text/javascript").
-    $(function () {
-      $('.session-start-time').datetimepicker({
-        icons: {
-          time: "fa fa-clock-o",
-          date: "fa fa-calendar",
-          up: "fa fa-arrow-up",
-          down: "fa fa-arrow-down"
-        }
-      });
-    });
+    SystemJS.import('client/tutorSessionForm');

@@ -1,0 +1,10 @@
+{
+  "extends": "../tslint.json",
+  "rules": {
+    "no-reference": false,
+    "no-var-requires": false,
+    "arrow-parens": false,
+    "variable-name": [true, "allow-pascal-case"],
+    "object-literal-sort-keys": false
+  }
+}
