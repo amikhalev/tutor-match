@@ -34,7 +34,7 @@ function configureAuth(app: Express.Express, passport: Passport.Passport, reposi
 
     passport.deserializeUser((id: number, done) => {
         users.findOneById(id)
-            .then(user => done(null, user), err => done(err));
+            .then(user => done(null, user || false), err => done(err));
     });
 
     app.use(passport.initialize());
