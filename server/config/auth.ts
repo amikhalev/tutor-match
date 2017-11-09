@@ -12,7 +12,7 @@ const urls = {
     GOOGLE_CALLBACK: '/auth/google/callback',
 };
 
-const GOOGLE_SCOPES = ['https://www.googleapis.com/auth/plus.login'];
+const GOOGLE_SCOPES = ['https://www.googleapis.com/auth/plus.login', 'email'];
 
 function configureAuth(app: Express.Express, passport: Passport.Passport, repositories: Repositories) {
 
@@ -23,7 +23,7 @@ function configureAuth(app: Express.Express, passport: Passport.Passport, reposi
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: env.getPublicUri() + urls.GOOGLE_CALLBACK,
     }, (accessToken, refreshToken, profile: Passport.Profile, done) => {
-        console.log(`logging in user id=${profile.id}, name="${profile.displayName}"`);
+        console.log(`logging in user id=${profile.id}, name="${profile.displayName}", domain=${(profile as any)._json.domain}`);
         users.verifyUser(profile)
             .then(user => done(null, user), err => done(err));
     }));

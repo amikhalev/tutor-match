@@ -8,5 +8,7 @@ block content
       if (theUser)
         .card-subtitle.mb-2.text-muted= theUser.roleName
         p.card-text= theUser.biography || "No description provided"
-        if(user && user.id == theUser.id || user.role == UserRole.Admin)
+        p.card-text= "Graduation Year:" + (theUser.graduationYear || "Not specified.")
+        p.card-text= "School:" + (theUser.school.name || "Not specified.")
+        if(user && user.id == theUser.id || user.role == 100)
           a.btn.btn-primary(href='/profile/'+theUser.id+'/edit') Edit

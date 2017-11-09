@@ -6,8 +6,10 @@ import { UserRole } from '../entities';
 export const home = {title: 'Home', href: '/', minimumRole: UserRole.None};
 export const tutorSessions = {title: 'Tutor Sessions', href: '/tutor_sessions', minimumRole: UserRole.Student};
 export const signUpToTutor = {title: 'Post a session', href: '/tutor_sessions/new', minimumRole: UserRole.Tutor};
+export const admin = {title: 'Admin', href: '/admin', minimumRole: UserRole.Admin};
+export const schoolAdmin = {title: 'School Admin', href: '#', minimumRole: UserRole.SchoolAdmin};
 
-export const nav = [home, tutorSessions, signUpToTutor];
+export const nav = [home, tutorSessions, signUpToTutor, admin, schoolAdmin];
 
 export function locals(req: Request) {
     const activeItem = nav.find(item => req.path === item.href);
