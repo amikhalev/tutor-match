@@ -14,7 +14,7 @@ To build and start the app in a Docker container listening on port 8080, run
 make build
 scripts/docker.sh prod up
 ```
-This will `npm install` any dependencies (if `node_modules` is missing), compile all necessary files, build the container, and start it. This includes a MariaDB server, and it will set the `DATABASE_URL` environment variable automatically.
+This will `npm install` any dependencies (if `node_modules` is missing), compile all necessary files, build the container, and start it. This includes a MariaDB server.
 
 To start the app in development mode, run
 ```sh
@@ -57,6 +57,7 @@ The root URI that the application is serving from. This is used for generating U
 The client settings required to access [Google OAuth2 APIs](https://developers.google.com/identity/protocols/OAuth2)
  - `SESSION_SECRET` **(required)** 
 The  [secret for `express-session`](https://github.com/expressjs/session#secret). Should be [randomly generated](https://randomkeygen.com/#ft_knox_pw).
- - `DATABASE_URL` **(required)** 
- A url specifying how to connect to the MySQL database. In the format `mysql://{user}:{pass}@{host}[:{port}]/{database}`
+ - `TYPEORM_*` **(required)** 
+ A set of variables configuring the connection to the database.
+ For more info, see [this page documenting the variables](https://github.com/typeorm/typeorm/blob/583754a52bb77d41e8052b66d33ce8ad246be30a/docs/using-ormconfig.md#loading-from-ormconfigenv-or-from-environment-variables).
  If running in Docker, this will be set by the container.

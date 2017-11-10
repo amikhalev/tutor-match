@@ -1,14 +1,12 @@
-import { ConnectionOptions, createConnection } from 'typeorm';
+import { ConnectionOptions, ConnectionOptionsReader, createConnection } from 'typeorm';
 
 import { entities } from '../entities';
-import { getEnv } from '../env';
 
 async function configureDatabase() {
-    const options: ConnectionOptions = {
-        type: 'mysql',
-        url: getEnv('DATABASE_URL'),
-        entities,
-        synchronize: true,
+    const optionsReader = new ConnectionOptionsReader();
+    const readOptions = await optionsReader.all();
+    const options = {
+        ...readOptions[0], entities,
     };
 
     const connection = await createConnection(options);
