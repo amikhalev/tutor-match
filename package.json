@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc -p server",
-    "start": "./node.sh .",
-    "watch": "(tsc -p server --watch &) && nodemon -x ./node.sh ."
+    "build": "make build",
+    "start": "make start",
+    "watch": "make start-watch"
   },
   "repository": {
     "type": "git",
