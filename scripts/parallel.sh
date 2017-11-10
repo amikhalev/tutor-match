@@ -4,12 +4,12 @@ pids=()
 
 for command in "$@"; do
     $command &
-    echo "Started \"$command\" with PID $!"
+    [ ! -z "$VERBOSE" ] || echo "Started \"$command\" with PID $!"
     pids+=("$!")
 done
 
 stop() {
-    echo "Stopping PIDs $pids"
+    [ ! -z "$VERBOSE" ] || echo "Stopping PIDs $pids"
     for pid in "$pids"; do
         kill $pid
     done
