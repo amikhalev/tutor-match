@@ -21,7 +21,8 @@ services:
     volumes:
       - ./:/app/
     environment:
-      DATABASE_URL: mysql://root:B7u6AlM5rz@database:3306/tutor_match
+      TYPEORM_CONNECTION: mysql
+      TYPEORM_URL: mysql://root:B7u6AlM5rz@database:3306/tutor_match
   database:
     image: mariadb:latest
     ports:
