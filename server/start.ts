@@ -11,7 +11,7 @@ import { config, createApp } from './';
 async function start() {
     const connection = await config.configureDatabase();
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.MOCK_DATA && process.env.MOCK_DATA !== 'false') {
         console.log('Inserting mock data');
         await config.createMockData(connection);
     }
