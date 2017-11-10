@@ -9,7 +9,9 @@ function getPort() {
 }
 
 function getPublicUri() {
-    return process.env.PUBLIC_URI || `http://localhost:${getPort()}`;
+    return process.env.PUBLIC_URI ||
+        process.env.NOW_URL ||
+        `http://localhost:${getPort()}`;
 }
 
 function getEnv(name: string) {
