@@ -104,13 +104,13 @@ $(() => {
                 break;
             case 'lunch':
                 if (!startTime.isBetween(startTime.clone().set({hour: 11}),
-                        startTime.clone().set({hour: 1}))) {
+                        startTime.clone().set({hour: 13}))) {
                     return false;
                 }
                 break;
             case 'after_school':
-                if (!startTime.isBetween(startTime.clone().set({hour: 14}),
-                        startTime.clone().set({hour: 16}))) {
+                if (!startTime.isBetween(startTime.clone().set({hour: 13}),
+                        startTime.clone().set({hour: 17}))) {
                     return false;
                 }
                 break;

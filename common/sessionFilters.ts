@@ -90,9 +90,9 @@ export function parseTimeRange(query: TimeRangeQuery): TimeRange {
             case 'morning':
                 startTime = moment({ hour: 6 }); endTime = moment({ hour: 11 }); break;
             case 'lunch':
-                startTime = moment({ hour: 11 }); endTime = moment({ hour: 1 }); break;
+                startTime = moment({ hour: 11 }); endTime = moment({ hour: 13 }); break;
             case 'after_school':
-                startTime = moment({ hour: 1 }); endTime = moment({ hour: 3, minute: 30 }); break;
+                startTime = moment({ hour: 13 }); endTime = moment({ hour: 17 }); break;
             case 'range':
                 startTime = moment(query.startTime, TIME_FORMAT);
                 endTime = moment(query.endTime, TIME_FORMAT);
