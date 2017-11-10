@@ -26,7 +26,7 @@ YARN_FLAGS 	  ?=
 NODE_FLAGS    ?=
 TSC_FLAGS	  ?=
 TSLINT_FLAGS  ?= --format verbose
-NODEMON_FLAGS ?= -e $(NODE) $(NODE_FLAGS)
+NODEMON_FLAGS ?= -x $(NODE) --delay 0.5 $(NODE_FLAGS)
 
 SERVER_SRCS := $(wildcard server/*.ts) $(wildcard server/*/*.ts)
 SERVER_OUTS := $(subst server/,dist/,$(SERVER_SRCS:.ts=.js))
@@ -67,12 +67,7 @@ start: build node_modules
 	$(NODE) $(NODE_FLAGS) .
 
 start-watch:
-	bash -c "@( make watch-server & ); PID1=$$!; \
-	( $(NODEMON) $(NODEMON_FLAGS) . & ); PID2=$$!; \
-	echo "PID1: $$PID1 PID2: $$PID2, test: $$!"; \
-	trap "echo stopping; kill $$PID1 && kill $$PID2" SIGINT SIGTERM; \
-	sleep inf; "
-
+	scripts/parallel.sh "make watch-server" "$(NODEMON) $(NODEMON_FLAGS) ."
 
 lint: $(SERVER_SRCS) node_modules
 	$(TSLINT) $(TSLINT_FLAGS) --project server
