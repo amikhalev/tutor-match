@@ -11,26 +11,39 @@ There are a few different ways to run the server
 
 To build and start the app in a Docker container listening on port 8080, run
 ```sh
-make start-docker
+make build
+scripts/docker.sh prod up
 ```
 This will `npm install` any dependencies (if `node_modules` is missing), compile all necessary files, build the container, and start it. This includes a MariaDB server, and it will set the `DATABASE_URL` environment variable automatically.
 
 To start the app in development mode, run
 ```sh
-make start-docker-dev
+scripts/docker.sh dev up
 ```
 This does the same as `start-docker`, but it will watch Typescript files for changes, compile them and restart the server. It also makes `node` listen on port 9229 for debuggers (`--inspect`).
 
-For more tasks, see `Makefile`
+To further customize the behavior of docker, you may pass additional arguments to `scripts/docker.sh`.
+These are passed as arguments to `docker-compose`.
 
 ### Local
 
+All required [environment variables](#environment) must be set for this to work
+
 The app can alse be ran outside of Docker. To build and run the app, run
 ```sh
-make build
-node .
+make start
 ```
-There are certain environment variables that must be set for this to work
+
+For more build tasks, see `Makefile`
+
+### Aliases
+
+To load some convenient aliases, run
+```sh
+source scripts/env.sh
+
+dockdev build && dockdev up # start docker container for development
+```
 
 ### Environment
 
