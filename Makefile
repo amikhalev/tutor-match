@@ -1,5 +1,5 @@
 ifneq ($(wildcard ./.env),)
-$(info Loading environment variables from .env)
+# $(info Loading environment variables from .env)
 include ./.env
 endif
 
@@ -22,19 +22,19 @@ $(error $(NODE))
 endif
 
 
-NODE_MODULES_BIN := ./node_modules/.bin
-TSC 	?= $(NODE) $(NODE_MODULES_BIN)/tsc
-TSLINT  ?= $(NODE) $(NODE_MODULES_BIN)/tslint
-NODEMON ?= $(NODE) $(NODE_MODULES_BIN)/nodemon
+NODE_MODULES_BIN :=./node_modules/.bin
+TSC 	?=$(NODE) $(NODE_MODULES_BIN)/tsc
+TSLINT  ?=$(NODE) $(NODE_MODULES_BIN)/tslint
+NODEMON ?=$(NODE) $(NODE_MODULES_BIN)/nodemon
 
 YARN_FLAGS 	  ?=
 NODE_FLAGS    ?=
 TSC_FLAGS	  ?=
-TSLINT_FLAGS  ?= --format verbose
-NODEMON_FLAGS ?= -x $(NODE) --delay 0.5 $(NODE_FLAGS)
+TSLINT_FLAGS  ?=--format verbose
+NODEMON_FLAGS ?=--delay 0.5 --quiet --exec make start
 
-SERVER_SRCS := $(wildcard server/*.ts) $(wildcard server/*/*.ts)
-SERVER_OUTS := $(subst server/,dist/,$(SERVER_SRCS:.ts=.js))
+SERVER_SRCS :=$(wildcard server/*.ts) $(wildcard server/*/*.ts)
+SERVER_OUTS :=$(subst server/,dist/,$(SERVER_SRCS:.ts=.js))
 
 .PHONY: all clean clean-modules install-modules build build-server watch watch-server start start-watch
 
@@ -78,11 +78,11 @@ watch-server: node_modules
 start:
 # only build if not running on now.sh, and if in development
 	@! [ "$$NOW" != "1" -a "$$NODE_ENV" == "development" ] || make build
-	@echo "==> Starting tutor-match\n"
 	$(NODE) $(NODE_FLAGS) .
 
 start-watch:
-	@scripts/parallel.sh "make watch" "$(NODEMON) $(NODEMON_FLAGS) ."
+	echo "==> Restarting tutor-match on every rebuild"
+	@scripts/parallel.sh 'make watch' '$(NODEMON) $(NODEMON_FLAGS)'
 
 lint: $(SERVER_SRCS) node_modules
 	$(TSLINT) $(TSLINT_FLAGS) --project server
