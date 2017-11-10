@@ -110,5 +110,8 @@
         "jspmNodeConversion": false
       }
     }
+  },
+  "now": {
+    "alias": "tutor-match"
   }
 }
