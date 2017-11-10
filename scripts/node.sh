@@ -1,4 +1,5 @@
 #!/bin/sh
+
 if command -v nvm; then 
     nvm run $*
 elif command -v node; then
