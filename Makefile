@@ -63,7 +63,10 @@ watch: watch-server
 watch-server: node_modules
 	$(TSC) $(TSC_FLAGS) --project server --watch
 
-start: build node_modules
+start:
+# only build if not running on now.sh, and if in development
+	@! [ "$$NOW" != "1" -a "$$NODE_ENV" == "development" ] || make build
+	@echo "==> Starting tutor-match\n"
 	$(NODE) $(NODE_FLAGS) .
 
 start-watch:
