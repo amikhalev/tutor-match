@@ -30,14 +30,11 @@
             "problemMatcher": []
         },
         {
-            "taskName": "tslint",
+            "label": "make lint",
             "type": "process",
-            "command": "node_modules/.bin/tslint",
+            "command": "make",
             "args": [
-                "-p",
-                "server",
-                "-t",
-                "verbose"
+                "lint"
             ],
             "problemMatcher": [
                 "$tslint5"

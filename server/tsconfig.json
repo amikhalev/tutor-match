@@ -12,6 +12,7 @@
         "noImplicitThis": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
         "sourceMap": true,
         "target": "es2017",
         "module": "commonjs",

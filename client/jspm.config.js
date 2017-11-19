@@ -6,12 +6,14 @@ SystemJS.config({
   browserConfig: {
     "baseURL": "/static",
     "paths": {
-      "client/": "js/client/"
+      "client/": "js/client/",
+      "common/": "js/common/"
     }
   },
   nodeConfig: {
     "paths": {
-      "client/": "client/"
+      "client/": "client/",
+      "common/": "common/"
     }
   },
   devConfig: {
@@ -37,8 +39,35 @@ SystemJS.config({
   },
   packages: {
     "client": {
-      "format": "system"
+      "format": "system",
+      "defaultExtension": "js"
     },
+    "common": {
+      "format": "system",
+      "defaultExtension": "js"
+    },
+    "npm:moment@2.19.1": {
+      "format": "cjs"
+    }
+  }
+});
+
+SystemJS.config({
+  packageConfigPaths: [
+    "npm:@*/*.json",
+    "npm:*.json",
+    "github:*/*.json"
+  ],
+  map: {
+    "bootstrap": "npm:bootstrap@4.0.0-beta.2",
+    "eonasdan-bootstrap-datetimepicker": "npm:eonasdan-bootstrap-datetimepicker@4.17.47",
+    "font-awesome": "npm:font-awesome@4.7.0",
+    "jquery": "npm:jquery@3.2.1",
+    "moment": "npm:moment@2.19.2",
+    "moment-timezone": "npm:moment-timezone@0.5.14",
+    "popper.js": "npm:popper.js@1.12.6"
+  },
+  packages: {
     "npm:bootstrap@4.0.0-beta.2": {
       "map": {
         "jquery": "npm:jquery@3.2.1",
@@ -57,22 +86,8 @@ SystemJS.config({
     },
     "npm:moment-timezone@0.5.14": {
       "map": {
-        "moment": "npm:moment@2.19.1"
+        "moment": "npm:moment@2.19.2"
       }
     }
-  },
-  packageConfigPaths: [
-    "npm:@*/*.json",
-    "npm:*.json",
-    "github:*/*.json"
-  ],
-  map: {
-    "bootstrap": "npm:bootstrap@4.0.0-beta.2",
-    "eonasdan-bootstrap-datetimepicker": "npm:eonasdan-bootstrap-datetimepicker@4.17.47",
-    "font-awesome": "npm:font-awesome@4.7.0",
-    "jquery": "npm:jquery@3.2.1",
-    "moment": "npm:moment@2.19.1",
-    "moment-timezone": "npm:moment-timezone@0.5.14",
-    "popper.js": "npm:popper.js@1.12.6"
-  },
+  }
 });

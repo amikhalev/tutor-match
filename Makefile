@@ -33,8 +33,8 @@ JSPM    ?=$(NODE) $(NODE_MODULES_BIN)/jspm
 YARN_FLAGS 	  ?=
 NODE_FLAGS    ?=
 TSC_FLAGS	  ?=
-TSLINT_FLAGS  ?=--format verbose
-NODEMON_FLAGS ?=--delay 0.5 --quiet --exec make start
+TSLINT_FLAGS  ?=--format verbose $(shell [ ! -z "$(FIX)" -a "$(FIX)" != "0" ] && echo "--fix")
+NODEMON_FLAGS ?=--delay 0.5 --quiet --watch .env --watch index.js --watch dist --exec make start
 
 SERVER_SRCS :=$(wildcard server/*.ts) $(wildcard server/*/*.ts) $(wildcard common/*.ts)
 SERVER_OUTS :=$(addprefix dist/,$(SERVER_SRCS:.ts=.js))
@@ -119,9 +119,14 @@ start-watch:
 	@echo "==> Restarting tutor-match on every rebuild"
 	@scripts/parallel.sh 'make watch' '$(NODEMON) $(NODEMON_FLAGS)'
 
-lint: $(SERVER_SRCS) node_modules
-	$(TSLINT) $(TSLINT_FLAGS) --project server
-	$(TSLINT) $(TSLINT_FLAGS) --project client
+# Lints everything
+# Run with FIX=1 to automaticall fix some lint errors
+lint: lint-server lint-client
 
-lint-fix: $(SERVER_SRCS) node_modules
-	TSLINT_FLAGS="$(TSLINT_FLAGS) --fix" make lint
+lint-server: $(NODE_MODULES)
+	@echo "==> Linting server"
+	$(TSLINT) $(TSLINT_FLAGS) --project server
+
+lint-client: $(NODE_MODULES)
+	@echo "==> Linting client"
+	$(TSLINT) $(TSLINT_FLAGS) --project client --exclude client/jspm.config.js

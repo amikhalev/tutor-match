@@ -1,4 +1,4 @@
-import { ConnectionOptions, ConnectionOptionsReader, createConnection } from 'typeorm';
+import { ConnectionOptionsReader, createConnection } from 'typeorm';
 
 import { entities } from '../entities';
 

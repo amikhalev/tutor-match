@@ -1,6 +1,8 @@
 import * as moment from 'moment';
 import { AfterLoad, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
+import { TutorSessionJSON } from '../../common/json';
+
 import { User, UserRole } from './User';
 
 @Entity()
@@ -118,6 +120,16 @@ export class TutorSession {
         }
         this.cancelledAt = new Date();
         return true;
+    }
+
+    toJSON(): TutorSessionJSON {
+        return {
+            id: this.id, startTime: this.startTime.valueOf(), durationSeconds: this.durationSeconds,
+            tutor: this.tutor ? this.tutor.toJSON() : null, school: this.school, location: this.location,
+            subject: this.subject, maxStudents: this.maxStudents,
+            students: this.students ? this.students.map(s => s.toJSON()) : [],
+            cancelledAt: this.cancelledAt ? this.cancelledAt.valueOf() : null,
+        };
     }
 
     @AfterLoad()

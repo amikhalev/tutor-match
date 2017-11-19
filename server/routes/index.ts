@@ -54,7 +54,7 @@ function createRouter(repositories: Repositories) {
 
     router.get(nav.tutorSessions.href, ensureLoggedIn(nav.tutorSessions.minimumRole), (req, res, next) => {
         const filters = parseSessionFilters(req.query, req.user);
-        console.log('filters: ', filters);
+        // console.log('filters: ', filters);
         tutorSessions.findSessionsFiltered(filters)
             .then(sessions => {
                 res.render('tutor_sessions', {

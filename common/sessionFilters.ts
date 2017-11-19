@@ -1,4 +1,6 @@
-import * as moment from 'moment';
+import moment from 'moment';
+
+import { TutorSessionJSON, UserJSON } from './json';
 
 /** Filter on calendar dates */
 export type DateRangeQuery = {
@@ -159,4 +161,32 @@ export function parseSessionFilters(query: SessionFiltersQuery, currentUserId?: 
         attending: userQuery(query.attending, currentUserId),
         subject: (typeof query.subject !== 'string') ? undefined : query.subject,
     };
+}
+
+export function filterSession(filt: SessionFilters, session: TutorSessionJSON,
+                              currentUser: UserJSON | undefined): boolean {
+    const today = moment({ hour: 0 });
+    const startTime = moment(session.startTime);
+    if (filt.startDate && startTime.isBefore(filt.startDate)) {
+        return false;
+    } else if (filt.endDate && startTime.isAfter(filt.endDate)) {
+        return false;
+    }
+    const date = { year: startTime.year(), month: startTime.month(), date: startTime.date() };
+    if (filt.startTime && startTime.isBefore(filt.startTime.clone().set(date))) {
+        return false;
+    } else if (filt.endTime && startTime.isBefore(filt.endTime.clone().set(date))) {
+        return false;
+    }
+    if (filt.cancelled != null && filt.cancelled !== (session.cancelledAt != null)) {
+        return false;
+    }
+    if (filt.tutoring && (!session.tutor || !currentUser || session.tutor.id !== currentUser.id)) {
+        return false;
+    }
+    if (filt.attending && (!session.students || !currentUser ||
+        !session.students.some(student => student.id === currentUser.id))) {
+        return false;
+    }
+    return true;
 }

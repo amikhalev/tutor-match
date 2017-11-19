@@ -23,7 +23,7 @@ done
 stop() {
     [ -z "$VERBOSE" ] || echo "Stopping PIDs ${pids[*]}"
     for pid in "$pids"; do
-        kill $pid $@
+        kill $@ $pid
     done
     exit
 }
