@@ -1,10 +1,5 @@
 extends layout.pug
 
-block head
-  script(type="text/javascript" src="/vendor/moment/moment.js")
-  link(rel='stylesheet' href='/vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css')
-  script(type='text/javascript' src='/vendor/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js')
-
 block content
   .jumbotron
     h1 Post a new tutoring session
@@ -12,7 +7,3 @@ block content
       - const new_session = true;
       include includes/tutor_session_form
       button.btn.btn-success(type="submit") Create
-    script(type="text/javascript").
-      $(function() {
-        $('.session-start-time input').val(moment().format('L LT'))
-      });

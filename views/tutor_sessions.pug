@@ -1,20 +1,13 @@
 extends layout.pug
 
+block head
+  script.
+      SystemJS.import('client/tutorSessionFilters')
+
 block content
-  -
-    const timeRangeHeadings = {
-        0: "All sessions",
-        1: "This week's sessions",
-        2: "Today's sessions",
-    };
-    const heading = timeRangeHeadings[timeRange] || timeRangeHeadings[3];
-    let tr = 0;
-  h1 #{heading}
-    small.h4
-      while tr < 3
-        if tr !== timeRange
-          a.ml-3(href="?timeRange=" + tr)= timeRangeHeadings[tr]
-        - tr++
-  .row
-   each session in sessions
-    .col-12.col-lg-6.col-xl-4.pb-3: include includes/tutor_session_card
+  #session-list
+    h1 Sessions
+    include includes/tutor_session_filters
+    .row.list
+     each session in sessions
+      .col-12.col-lg-6.col-xl-4.pb-3: include includes/tutor_session_card

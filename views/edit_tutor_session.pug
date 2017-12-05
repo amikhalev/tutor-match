@@ -1,10 +1,5 @@
 extends layout.pug
 
-block head
-  script(type="text/javascript" src="/vendor/moment/moment.js")
-  link(rel='stylesheet' href='/vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css')
-  script(type='text/javascript' src='/vendor/eonasdan-bootstrap-datetimepicker/src/js/bootstrap-datetimepicker.js')
-
 block content
   .jumbotron
     h1 Edit a tutoring session
@@ -13,7 +8,3 @@ block content
       .card-buttons
         button.btn.btn-primary(type="submit") Save
         a.btn.btn-danger(href=session.url) Cancel
-    script(type="text/javascript").
-      $(function() {
-      //  $('.session-start-time input').val(moment().format('L LT'))
-      });

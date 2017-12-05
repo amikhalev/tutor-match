@@ -1,0 +1,15 @@
+{
+  "include": [
+    "./**/*"
+  ],
+  "compilerOptions": {
+    "allowJs": true,
+    "outDir": "../static/js",
+    "target": "es3",
+    "lib": ["es5", "es2015.iterable", "dom"],
+    "module": "system",
+    "moduleResolution": "node",
+    "types": [],
+    "baseUrl": ".."
+  }
+}

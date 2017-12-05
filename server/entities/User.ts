@@ -1,5 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+import { UserJSON } from '../../common/json';
+
 export enum UserRole {
     None = 0,
     Student = 10,
@@ -47,5 +49,12 @@ export class User {
 
     userCanModify(user: User): boolean {
         return this.id === user.id || user.role >= UserRole.Teacher;
+    }
+
+    toJSON(): UserJSON {
+        return {
+            id: this.id, googleId: this.googleId, displayName: this.displayName, biography: this.biography,
+            role: this.role,
+        };
     }
 }

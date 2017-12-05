@@ -3,7 +3,8 @@ import { Router } from 'express';
 import { ensureLoggedIn } from '../config/auth';
 import { TutorSession, User, UserRole } from '../entities';
 import { Repositories } from '../repositories';
-import { parseTimeRange } from '../timeRange';
+
+import { parseSessionFilters } from '../../common/sessionFilters';
 
 import * as nav from './nav';
 
@@ -52,11 +53,12 @@ function createRouter(repositories: Repositories) {
     });
 
     router.get(nav.tutorSessions.href, ensureLoggedIn(nav.tutorSessions.minimumRole), (req, res, next) => {
-        const timeRange = parseTimeRange(req.query.timeRange);
-        tutorSessions.findSessionsInTimeRange(timeRange)
+        const filters = parseSessionFilters(req.query, req.user);
+        // console.log('filters: ', filters);
+        tutorSessions.findSessionsFiltered(filters)
             .then(sessions => {
                 res.render('tutor_sessions', {
-                    ...nav.locals(req), timeRange, sessions,
+                    ...nav.locals(req), query: req.query, sessions,
                 });
             }).catch(next);
     });
