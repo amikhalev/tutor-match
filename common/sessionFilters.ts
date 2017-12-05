@@ -1,4 +1,9 @@
-import moment from 'moment';
+import * as moment from 'moment';
+
+/* moment is super weird through SystemJS, this hack fixes it */
+try {
+    (moment as any) = (moment as any).default ? (moment as any).default : moment;
+} catch (e) { /* ignore */ }
 
 import { TutorSessionJSON, UserJSON } from './json';
 
