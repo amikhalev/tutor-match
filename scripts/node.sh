@@ -1,8 +1,10 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-if command -v nvm; then 
+[ -e $HOME/.nvm/nvm.sh ] && source $HOME/.nvm/nvm.sh
+
+if which nvm 1>/dev/null; then 
     nvm run $*
-elif command -v node; then
+elif which node 1>/dev/null; then
     node $*
 else
     >&2 echo "Could not find a node executable"

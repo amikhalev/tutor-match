@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Server",
-            "runtimeExecutable": "${workspaceFolder}/node.sh",
+            "runtimeExecutable": "${workspaceFolder}/scripts/node.sh",
             "program": "${workspaceFolder}/index.js",
             "env": {
                 "NODE_ENV": "development"
