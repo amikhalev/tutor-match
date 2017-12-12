@@ -116,6 +116,7 @@ export type SessionFiltersQuery = DateRangeQuery & TimeRangeQuery & {
     tutoring?: boolean | number | string;
     /** filters only sessions where this user id is attending as a student. true filters on current user */
     attending?: boolean | number | string;
+    notStarted?: boolean | string;
     /** filters the subject of a session */
     subject?: string;
 };
@@ -128,6 +129,7 @@ export interface SessionFilters extends DateRange, TimeRange {
     tutoring?: number;
     /** filters only sessions where this user id is attending as a student */
     attending?: number;
+    notStarted?: boolean;
     /** filters the subject of a session */
     subject?: string;
 }
@@ -164,6 +166,7 @@ export function parseSessionFilters(query: SessionFiltersQuery, currentUserId?: 
         cancelled: parseBoolean(query.cancelled),
         tutoring: userQuery(query.tutoring, currentUserId),
         attending: userQuery(query.attending, currentUserId),
+        notStarted: parseBoolean(query.notStarted),
         subject: (typeof query.subject !== 'string') ? undefined : query.subject,
     };
 }
@@ -191,6 +194,9 @@ export function filterSession(filt: SessionFilters, session: TutorSessionJSON,
     }
     if (filt.attending && (!session.students || !currentUser ||
         !session.students.some(student => student.id === currentUser.id))) {
+        return false;
+    }
+    if (filt.notStarted && (new Date(session.startTime) < new Date())) {
         return false;
     }
     return true;

@@ -13,6 +13,7 @@ $(() => {
         cancelled: $('#filter-cancelled'),
         tutoring: $('#filter-tutoring'),
         attending: $('#filter-attending'),
+        notStarted: $('#filter-notStarted'),
         apply: $('#filters-apply'),
         reset: $('#filters-reset'),
     };
@@ -42,9 +43,10 @@ $(() => {
     function resetFilters() {
         filterEls.dateRange.val('all');
         filterEls.timeRange.val('all');
-        filterEls.cancelled.prop('indeterminate', true);
+        filterEls.cancelled.prop('checked', false);
         filterEls.tutoring.prop('checked', false);
         filterEls.attending.prop('checked', false);
+        filterEls.notStarted.prop('checked', true);
     }
 
     function getFiltersQuery(): SessionFiltersQuery {
@@ -54,6 +56,7 @@ $(() => {
             cancelled: filterEls.cancelled.prop('indeterminate') ? undefined : filterEls.cancelled.prop('checked'),
             tutoring: filterEls.tutoring.prop('checked'),
             attending: filterEls.attending.prop('checked'),
+            notStarted: filterEls.notStarted.prop('checked'),
         };
     }
 

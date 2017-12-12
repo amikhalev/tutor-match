@@ -4,6 +4,7 @@ import { ensureLoggedIn } from '../config/auth';
 import { TutorSession, User, UserRole } from '../entities';
 import { getNameForUserRole } from '../entities/User';
 import { Repositories } from '../repositories';
+import { AppError, NotFoundError } from '../errors';
 
 import { parseSessionFilters } from '../../common/sessionFilters';
 
@@ -158,6 +159,24 @@ function createRouter(repositories: Repositories) {
                     res.redirect(session.url);
                 }).catch(next);
         });
+
+    router.use((req, res, next) => {
+        next(new NotFoundError("page", req.url));
+    })
+
+    router.use((err, req, res, next) => {
+        if (err instanceof AppError){
+            res.status(err.httpStatus);
+            if (req.accepts('html')) {
+                return res.render(err.errorView, { err: err });
+            }
+            if (req.accepts('json')) {
+                return res.send(err.toJSON());
+            }
+            return res.type('text').send(err.toString());
+        }
+        next(err);
+    });
 
     return router;
 }
