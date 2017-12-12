@@ -6,7 +6,7 @@ block content
     .card-body
       h3.card-title= theUser.displayName
       if (theUser)
-        .card-subtitle.mb-2.text-muted= theUser.roleName
-        p.card-text= theUser.biography || "No description provided"
-        if(user && user.id == theUser.id || user.role == UserRole.Admin)
+        .card-subtitle.mb-2.text-muted Role: #{theUser.roleName}
+        p.card-text= theUser.biography.trim() || "No description provided"
+        if(theUser.userCanModify(user))
           a.btn.btn-primary(href='/profile/'+theUser.id+'/edit') Edit

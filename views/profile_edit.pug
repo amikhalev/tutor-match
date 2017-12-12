@@ -4,10 +4,22 @@ block content
     h1 Edit user profile
     .card
         .card-body
-            h3.card-title= theUser.displayName
             form.form.my-md-0(action=theUser.url + "/edit", method='POST')
+                h3.card-title
+                    input.form-control.form-control-lg(type="text", name="displayName", value=theUser.displayName, maxlength="100")
+                - const allowedRoles = user.allowedRoleChanges;
+                if !allowedRoles.length
+                    .card-subtitle.mb-2.text-muted Role: #{theUser.roleName}
+                else
+                    .form-group
+                        label(for="role") Role
+                        select.form-control#role(name="role")
+                            each role in allowedRoles
+                                option(value=role, selected=(role == theUser.role)) #{getNameForUserRole(role)}
                 .form-group
                     label(for="bio") Description
                     textarea.form-control(id="bio", name="bio", cols="50", rows="5", maxlength="250")= theUser.biography
-                button.btn.btn-primary(type="submit") Submit
+                .card-buttons
+                    button.btn.btn-primary(type="submit") Submit
+                    a.btn.btn-danger(href=theUser.url) Cancel
             

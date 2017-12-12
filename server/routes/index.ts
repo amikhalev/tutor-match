@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import { ensureLoggedIn } from '../config/auth';
 import { TutorSession, User, UserRole } from '../entities';
+import { getNameForUserRole } from '../entities/User';
 import { Repositories } from '../repositories';
 
 import { parseSessionFilters } from '../../common/sessionFilters';
@@ -67,12 +68,15 @@ function createRouter(repositories: Repositories) {
         res.render('profile', { ...nav.locals(req), theUser: req.targetUser});
     });
 
-    router.post('/profile/:user_id/edit', ensureLoggedIn(UserRole.Student), (req, res, next) => {
+    router.post('/profile/:user_id/edit', ensureLoggedIn(UserRole.None), (req, res, next) => {
         if (!req.targetUser!.userCanModify(req.user)) {
             res.status(403).send(`You do not have permission to edit user id ${req.targetUser!.id}`);
             return next();
         }
-        req.targetUser!.updateFromData(req.body);
+        if (!req.targetUser!.updateFromData(req.body, req.user)) {
+            res.status(401).send(`Invalid user modification`);
+            return next();
+        }
         users.save(req.targetUser!)
             .then(() => {
                 res.redirect(req.targetUser!.url);
@@ -80,12 +84,12 @@ function createRouter(repositories: Repositories) {
             }).catch(next);
     });
 
-    router.get('/profile/:user_id/edit', ensureLoggedIn(UserRole.Student), (req, res) => {
+    router.get('/profile/:user_id/edit', ensureLoggedIn(UserRole.None), (req, res) => {
         if (!req.targetUser!.userCanModify(req.user)) {
             res.status(403).send(`You do not have permission to edit user id ${req.targetUser!.id}`);
             return;
         }
-        res.render('profile_edit', { ...nav.locals(req), theUser: req.targetUser});
+        res.render('profile_edit', { ...nav.locals(req), theUser: req.targetUser, getNameForUserRole });
     });
 
     router.post(nav.tutorSessions.href, ensureLoggedIn(UserRole.Tutor), (req, res, next) => {
