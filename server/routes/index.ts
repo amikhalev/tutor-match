@@ -29,8 +29,8 @@ function createRouter(repositories: Repositories) {
         res.render('index', nav.locals(req));
     });
 
-    router.param('tutor_session',  (req, res, next, value) => {
-        tutorSessions.findOneById(value, { relations: [ 'tutor', 'students' ] })
+    router.param('tutor_session', (req, res, next, value) => {
+        tutorSessions.findOneById(value, { relations: ['tutor', 'students'] })
             .then(session => {
                 if (session) {
                     req.tutorSession = session;
@@ -43,7 +43,7 @@ function createRouter(repositories: Repositories) {
     });
 
     router.param('user_id', (req, res, next, value) => {
-        users.findOneById(value).then( theuser => {
+        users.findOneById(value).then(theuser => {
             if (theuser) {
                 req.targetUser = theuser;
                 next();
@@ -51,7 +51,7 @@ function createRouter(repositories: Repositories) {
                 res.status(404).send(`profile id "${value}" not found`);
             }
         })
-        .catch(err => next(err));
+            .catch(err => next(err));
     });
 
     router.get(nav.tutorSessions.href, ensureLoggedIn(nav.tutorSessions.minimumRole), (req, res, next) => {
@@ -66,7 +66,7 @@ function createRouter(repositories: Repositories) {
     });
 
     router.get('/profile/:user_id', (req, res) => {
-        res.render('profile', { ...nav.locals(req), theUser: req.targetUser});
+        res.render('profile', { ...nav.locals(req), theUser: req.targetUser });
     });
 
     router.post('/profile/:user_id/edit', ensureLoggedIn(UserRole.None), (req, res, next) => {
@@ -110,9 +110,9 @@ function createRouter(repositories: Repositories) {
 
     router.get(nav.tutorSessions.href + '/:tutor_session',
         ensureLoggedIn(nav.tutorSessions.minimumRole), (req, res) => {
-        const session = req.tutorSession!;
-        res.render('tutor_session', { ...nav.locals(req), title: session.title, session });
-    });
+            const session = req.tutorSession!;
+            res.render('tutor_session', { ...nav.locals(req), title: session.title, session });
+        });
 
     router.get(nav.tutorSessions.href + '/:tutor_session/edit',
         ensureLoggedIn(), (req, res, next) => {
@@ -120,7 +120,7 @@ function createRouter(repositories: Repositories) {
             if (!session.userCanModify(req.user)) {
                 return res.status(403).send('You do not have permission to edit tutor session ' + session.id);
             }
-            res.render('edit_tutor_session', { ...nav.locals(req), title: 'Editing ' + session.title , session });
+            res.render('edit_tutor_session', { ...nav.locals(req), title: 'Editing ' + session.title, session });
         });
 
     router.post(nav.tutorSessions.href + '/:tutor_session/edit',
@@ -145,6 +145,22 @@ function createRouter(repositories: Repositories) {
                 .catch(next);
         });
 
+    router.post(nav.tutorSessions.href + '/:tutor_session/sign_up_cancel',
+        ensureLoggedIn(UserRole.Student), (req, res, next) => {
+            const session = req.tutorSession!;
+            const sessionIdx = session.students!.findIndex(student => student.id === req.user.id);
+            if (sessionIdx == -1) {
+                throw new AppError({
+                    message: "You are not signed up for this session",
+                    httpStatus: 400, user: req.user.id, session: session.id,
+                });
+            }
+            session.students!.splice(sessionIdx, 1);
+            repositories.tutorSessions.save(session)
+                .then(() => { res.redirect(req.header('Referrer' || session.url)); })
+                .catch(next);
+        });
+
     router.post(nav.tutorSessions.href + '/:tutor_session/cancel',
         ensureLoggedIn(UserRole.Student), (req, res, next) => {
             const session = req.tutorSession!;
@@ -161,11 +177,11 @@ function createRouter(repositories: Repositories) {
         });
 
     router.use((req, res, next) => {
-        next(new NotFoundError("page", req.url));
+        next(new NotFoundError({ resource: req.url }));
     })
 
     router.use((err, req, res, next) => {
-        if (err instanceof AppError){
+        if (err instanceof AppError) {
             res.status(err.httpStatus);
             if (req.accepts('html')) {
                 return res.render(err.errorView, { err: err });

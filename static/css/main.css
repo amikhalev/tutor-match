@@ -4,6 +4,7 @@
 }
 
 .card-buttons > .btn,
+.card-buttons > .btn-group,
 .card-buttons > form {
     margin-right: .5em;
 }

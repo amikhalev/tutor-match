@@ -1,5 +1,9 @@
 extends layout.pug
 
+block head
+  script.
+      SystemJS.import('client/tutorSessionCard')
+
 block content
   a.btn.btn-outline-secondary.mb-3(href="/tutor_sessions") Back to all sessions
   - const showing_single = true

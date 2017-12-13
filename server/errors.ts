@@ -1,24 +1,21 @@
 import { capitalize } from 'lodash';
 
-export enum ErrorType {
-    Program
-}
-
-export class AppError<T = any> extends Error {
+export class AppError extends Error {
     name = "AppError";
-    httpStatus: number;
-    errorView: string;
-    cause: Error | undefined;
+    httpStatus: number = 500;
+    errorView: string = "error";
+    cause: Error | undefined = undefined;
+    [key: string]: any;
 
-    constructor(message?: string, httpStatus: number = 500, errorView: string = "error", cause?: Error) {
-        super(message);
-        this.httpStatus = httpStatus;
-        this.errorView = errorView;
-        this.cause = cause;
+    constructor(opts?: Partial<AppError>) {
+        super(opts && opts.message);
+        if (opts) {
+            Object.assign(this, opts);
+        }
     }
 
     toJSON() {
-        return { type: "error", httpStatus: this.httpStatus, message: this.message, cause: this.cause };
+        return { type: "error", ...(this as object) };
     }
 
     toString() {
@@ -35,12 +32,12 @@ export class AppError<T = any> extends Error {
 
 export class NotFoundError<T = any> extends AppError {
     name = "NotFoundError";
-    resourceType: string;
-    resource: string | undefined;
+    httpStatus = 404;
+    resourceType: string = "page";
+    resource: string | undefined = undefined;
 
-    constructor(resourceType: string = "page", resource?: string, cause?: Error) {
-        super(`${capitalize(resourceType)} not found` + (resource ? ': ' + resource : ''), 404, "error", cause);
-        this.resourceType = resourceType;
-        this.resource = resource;
+    constructor(opts?: Partial<NotFoundError>) {
+        super(opts);
+        this.message = `${capitalize(this.resourceType)} not found` + (this.resource ? ': ' + this.resource : '');
     }
 }

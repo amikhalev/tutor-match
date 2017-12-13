@@ -23,7 +23,12 @@
             if !showing_single
                 a.btn.btn-outline-secondary(href=session.url) Details
             if user && session.userIsSignedUpFor(user)
-                button.btn.btn-primary(disabled) Signed up
+                form.cancel-sign-up-form(action=session.url + "/sign_up_cancel", method="POST")
+                .btn-group
+                    button.btn.btn-primary(disabled) Signed up
+                    button.btn.btn-outline-danger.cancel-sign-up 
+                        i.fa.fa-ban.mr-2
+                        | Cancel
             else
                 form(action=session.url + "/sign_up" method="POST")
                     button.btn.btn-primary(type="submit") Sign up
@@ -31,4 +36,4 @@
                 a.btn.btn-secondary(href=session.url + "/edit") Edit
                 form(action=session.url + "/cancel", method="POST")
                     button.btn.btn-danger(type="submit", disabled=session.isCancelled)
-                        = session.isCancelled ? 'Cancelled' : 'Cancel'
+                        = session.isCancelled ? 'Cancelled' : 'Cancel session'
