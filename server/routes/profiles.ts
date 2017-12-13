@@ -33,7 +33,7 @@ function createRouter(repositories: Repositories) {
         req.targetUser!.updateFromData(req.body, req.user);
         users.save(req.targetUser!)
             .then(() => {
-                res.redirect(req.targetUser!.url);
+                res.redirect(req.targetUser!.profileUrl);
                 next();
             }).catch(next);
     });
