@@ -1,9 +1,9 @@
-import { capitalize } from 'lodash';
+// tslint:disable:max-classes-per-file
 
 export class AppError extends Error {
-    name = "AppError";
+    name = 'AppError';
     httpStatus: number = 500;
-    errorView: string = "error";
+    errorView: string = 'error';
     cause: Error | undefined = undefined;
     [key: string]: any;
 
@@ -12,32 +12,32 @@ export class AppError extends Error {
         this.setOpts(opts);
     }
 
+    toJSON() {
+        return { type: 'error', ...(this as object) };
+    }
+
+    toString() {
+        let text = `${this.name}: ${this.message}\n`;
+        if (process.env.NODE_ENV === 'development') {
+            text += 'Stacktrace: ' + this.stack + '\n';
+            if (this.cause) {
+                text += 'Cause: ' + this.cause + '\n';
+            }
+        }
+        return text;
+    }
+
     protected setOpts(opts?: Partial<AppError>) {
         if (opts) {
             Object.assign(this, opts);
         }
     }
-
-    toJSON() {
-        return { type: "error", ...(this as object) };
-    }
-
-    toString() {
-        let text = `${this.name}: ${this.message}\n`;
-        if (process.env.NODE_ENV === "development") {
-            text += "Stacktrace: " + this.stack + "\n";
-            if (this.cause) {
-                text += "Cause: " + this.cause + "\n";
-            }
-        }
-        return text;
-    }
 }
 
-export class NotFoundError<T = any> extends AppError {
-    name = "NotFoundError";
+export class NotFoundError extends AppError {
+    name = 'NotFoundError';
     httpStatus = 404;
-    resourceType: string = "Page";
+    resourceType: string = 'Page';
     resource: string | undefined = undefined;
 
     constructor(opts?: Partial<NotFoundError>) {
@@ -47,9 +47,9 @@ export class NotFoundError<T = any> extends AppError {
     }
 }
 
-export class ForbiddenError<T = any> extends AppError {
-    name = "ForbiddenError";
-    message = "You do not have permission to do that";
+export class ForbiddenError extends AppError {
+    name = 'ForbiddenError';
+    message = 'You do not have permission to do that';
     httpStatus = 403;
 
     constructor(opts?: Partial<ForbiddenError>) {
@@ -58,9 +58,9 @@ export class ForbiddenError<T = any> extends AppError {
     }
 }
 
-export class ValidationError<T = any> extends AppError {
-    name = "ValidationError";
-    message = "The provided request data was invalid";
+export class ValidationError extends AppError {
+    name = 'ValidationError';
+    message = 'The provided request data was invalid';
     httpStatus = 401;
 
     constructor(opts?: Partial<ValidationError>) {

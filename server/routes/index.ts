@@ -1,10 +1,10 @@
-import { Router, RequestHandler } from 'express';
+import { RequestHandler, Router } from 'express';
 
 import { ensureLoggedIn } from '../config/auth';
 import { TutorSession, User, UserRole } from '../entities';
 import { getNameForUserRole } from '../entities/User';
+import { AppError, ForbiddenError, NotFoundError } from '../errors';
 import { Repositories } from '../repositories';
-import { AppError, NotFoundError, ForbiddenError } from '../errors';
 
 import { parseSessionFilters } from '../../common/sessionFilters';
 
@@ -162,9 +162,9 @@ function createRouter(repositories: Repositories) {
         ensureLoggedIn(UserRole.Student), (req, res, next) => {
             const session = req.tutorSession!;
             const sessionIdx = session.students!.findIndex(student => student.id === req.user.id);
-            if (sessionIdx == -1) {
+            if (sessionIdx === -1) {
                 throw new AppError({
-                    message: "You are not signed up for this session",
+                    message: 'You are not signed up for this session',
                     httpStatus: 400, user: req.user.id, session: session.id,
                 });
             }
@@ -188,13 +188,13 @@ function createRouter(repositories: Repositories) {
 
     router.use((req, res, next) => {
         next(new NotFoundError({ resource: req.url }));
-    })
+    });
 
     router.use((err, req, res, next) => {
         if (err instanceof AppError) {
             res.status(err.httpStatus);
             if (req.accepts('html')) {
-                return res.render(err.errorView, { err: err });
+                return res.render(err.errorView, { err });
             }
             if (req.accepts('json')) {
                 return res.send(err.toJSON());

@@ -173,7 +173,6 @@ export function parseSessionFilters(query: SessionFiltersQuery, currentUserId?: 
 
 export function filterSession(filt: SessionFilters, session: TutorSessionJSON,
                               currentUser: UserJSON | undefined): boolean {
-    const today = moment({ hour: 0 });
     const startTime = moment(session.startTime);
     if (filt.startDate && startTime.isBefore(filt.startDate)) {
         return false;

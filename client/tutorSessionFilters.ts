@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import moment from 'moment';
 
 import { TutorSessionJSON, UserJSON } from '../common/json';
 import { filterSession, parseSessionFilters, SessionFilters, SessionFiltersQuery } from '../common/sessionFilters';
