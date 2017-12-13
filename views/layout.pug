@@ -28,7 +28,7 @@ html
                             a.btn.btn-primary(href='/auth/google') Login
                         else
                             .nav-item Welcome, #{user.displayName}
-                            a.btn.btn-outline-secondary.ml-2.px-2(href='/profile/' + user.id, title="Profile")
+                            a.btn.btn-outline-secondary.ml-2.px-2(href=user.profileUrl, title="Profile")
                                 i.fa.fa-user.fa-fw(aria-hidden=true)
                             a.btn.btn-outline-danger.ml-2.px-2(href='/logout', title= "Log out")
                                 i.fa.fa-sign-out.fa-fw(aria-hidden="aria-hidden")

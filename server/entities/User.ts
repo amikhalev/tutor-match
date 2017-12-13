@@ -42,8 +42,8 @@ export class User {
         return getNameForUserRole(this.role);
     }
 
-    get url() {
-        return '/profile/' + this.id;
+    get profileUrl() {
+        return '/profiles/' + this.id;
     }
 
     updateFromData(body: any, modifyingUser: User) {

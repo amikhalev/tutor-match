@@ -9,4 +9,4 @@ block content
         .card-subtitle.mb-2.text-muted Role: #{theUser.roleName}
         p.card-text= theUser.biography.trim() || "No description provided"
         if(theUser.userCanModify(user))
-          a.btn.btn-primary(href='/profile/'+theUser.id+'/edit') Edit
+          a.btn.btn-primary(href=theUser.profileUrl + '/edit') Edit
