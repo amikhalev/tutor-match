@@ -1,10 +1,10 @@
-import { Router } from 'express';
+import { Router, RequestHandler } from 'express';
 
 import { ensureLoggedIn } from '../config/auth';
 import { TutorSession, User, UserRole } from '../entities';
 import { getNameForUserRole } from '../entities/User';
 import { Repositories } from '../repositories';
-import { AppError, NotFoundError } from '../errors';
+import { AppError, NotFoundError, ForbiddenError } from '../errors';
 
 import { parseSessionFilters } from '../../common/sessionFilters';
 
@@ -36,7 +36,7 @@ function createRouter(repositories: Repositories) {
                     req.tutorSession = session;
                     next();
                 } else {
-                    res.status(404).send(`tutor_session id "${value}" not found`);
+                    throw new NotFoundError({ resourceType: 'TutorSession', resource: value });
                 }
             })
             .catch(err => next(err));
@@ -48,7 +48,7 @@ function createRouter(repositories: Repositories) {
                 req.targetUser = theuser;
                 next();
             } else {
-                res.status(404).send(`profile id "${value}" not found`);
+                throw new NotFoundError({ resourceType: 'User', resource: value });
             }
         })
             .catch(err => next(err));
@@ -69,15 +69,38 @@ function createRouter(repositories: Repositories) {
         res.render('profile', { ...nav.locals(req), theUser: req.targetUser });
     });
 
-    router.post('/profile/:user_id/edit', ensureLoggedIn(UserRole.None), (req, res, next) => {
-        if (!req.targetUser!.userCanModify(req.user)) {
-            res.status(403).send(`You do not have permission to edit user id ${req.targetUser!.id}`);
-            return next();
-        }
-        if (!req.targetUser!.updateFromData(req.body, req.user)) {
-            res.status(401).send(`Invalid user modification`);
-            return next();
-        }
+    function checkCanModifyUser(): RequestHandler {
+        return (req, res, next) => {
+            const { user, targetUser } = req;
+            if (!targetUser!.userCanModify(user)) {
+                throw new ForbiddenError({
+                    message: `You do not have permission to edit user id ${targetUser!.id}`,
+                    targetUser: targetUser!.id,
+                    user: user.id,
+                    role: user.role,
+                });
+            }
+            next();
+        };
+    }
+
+    function checkCanModifyTutorSession(): RequestHandler {
+        return (req, res, next) => {
+            const { user, tutorSession } = req;
+            if (!tutorSession!.userCanModify(user)) {
+                throw new ForbiddenError({
+                    message: `You do not have permission to edit tutor session id ${tutorSession!.id}`,
+                    targetUser: tutorSession!.id,
+                    user: user.id,
+                    role: user.role,
+                });
+            }
+            next();
+        };
+    }
+
+    router.post('/profile/:user_id/edit', ensureLoggedIn(UserRole.None), checkCanModifyUser(), (req, res, next) => {
+        req.targetUser!.updateFromData(req.body, req.user);
         users.save(req.targetUser!)
             .then(() => {
                 res.redirect(req.targetUser!.url);
@@ -85,11 +108,7 @@ function createRouter(repositories: Repositories) {
             }).catch(next);
     });
 
-    router.get('/profile/:user_id/edit', ensureLoggedIn(UserRole.None), (req, res) => {
-        if (!req.targetUser!.userCanModify(req.user)) {
-            res.status(403).send(`You do not have permission to edit user id ${req.targetUser!.id}`);
-            return;
-        }
+    router.get('/profile/:user_id/edit', ensureLoggedIn(UserRole.None), checkCanModifyUser(), (req, res) => {
         res.render('profile_edit', { ...nav.locals(req), theUser: req.targetUser, getNameForUserRole });
     });
 
@@ -115,20 +134,14 @@ function createRouter(repositories: Repositories) {
         });
 
     router.get(nav.tutorSessions.href + '/:tutor_session/edit',
-        ensureLoggedIn(), (req, res, next) => {
+        ensureLoggedIn(), checkCanModifyTutorSession(), (req, res, next) => {
             const session = req.tutorSession!;
-            if (!session.userCanModify(req.user)) {
-                return res.status(403).send('You do not have permission to edit tutor session ' + session.id);
-            }
             res.render('edit_tutor_session', { ...nav.locals(req), title: 'Editing ' + session.title, session });
         });
 
     router.post(nav.tutorSessions.href + '/:tutor_session/edit',
-        ensureLoggedIn(), (req, res, next) => {
+        ensureLoggedIn(), checkCanModifyTutorSession(), (req, res, next) => {
             let session = req.tutorSession!;
-            if (!session.userCanModify(req.user)) {
-                return res.status(403).send('You do not have permission to edit tutor session ' + session.id);
-            }
             session = TutorSession.parseFormData(req.body, session);
             tutorSessions.save(session)
                 .then(() => {
@@ -157,18 +170,15 @@ function createRouter(repositories: Repositories) {
             }
             session.students!.splice(sessionIdx, 1);
             repositories.tutorSessions.save(session)
-                .then(() => { res.redirect(req.header('Referrer' || session.url)); })
+                .then(() => { res.redirect(req.header('Referrer') || session.url); })
                 .catch(next);
         });
 
     router.post(nav.tutorSessions.href + '/:tutor_session/cancel',
-        ensureLoggedIn(UserRole.Student), (req, res, next) => {
+        ensureLoggedIn(UserRole.Student), checkCanModifyTutorSession(), (req, res, next) => {
             const session = req.tutorSession!;
-            if (!session.userCanModify(req.user)) {
-                return res.status(403).send('You are not permitted to delete TutorSession with id ' + session.id);
-            }
             if (!session.cancel()) {
-                return res.status(400).send('That section has already been cancelled');
+                throw new AppError({ httpStatus: 400, message: 'That section has already been cancelled' });
             }
             tutorSessions.save(session)
                 .then(() => {

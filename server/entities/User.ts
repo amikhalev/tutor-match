@@ -1,5 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+import { ValidationError, ForbiddenError } from '../errors';
 import { UserJSON } from '../../common/json';
 
 export enum UserRole {
@@ -45,14 +46,17 @@ export class User {
         return '/profile/' + this.id;
     }
 
-    updateFromData(body: any, modifyingUser: User): boolean {
+    updateFromData(body: any, modifyingUser: User) {
         const role = Number(body.role);
-        if (isNaN(role) || !modifyingUser.allowedRoleChanges.includes(role))
-            return false;
-        if (typeof body.bio !== "string" || body.bio.length > 250)
-            return false;
-        if (typeof body.displayName !== "string" || body.displayName.length > 100)
-            return false;
+        if (isNaN(role)) throw new ValidationError({ field: 'role', message: 'role is not a number' });
+        if (!modifyingUser.allowedRoleChanges.includes(role))
+            throw new ForbiddenError({ field: 'role', message: `You are not allowed to set user role to ${role}`, role });
+        if (typeof body.bio !== "string") throw new ValidationError({ field: 'bio', message: 'bio is not a string' })
+        if (body.bio.length >= 250)
+            throw new ValidationError({ field: 'bio', message: 'bio is too long', length: body.bio.length, maxLength: 250 });
+        if (typeof body.displayName !== "string") throw new ValidationError({ field: 'displayName', message: 'displayName is not a string' })
+        if (body.displayName.length > 100)
+            throw new ValidationError({ field: 'displayName', message: 'displayName is too long', length: body.displayName.length, maxLength: 100 });
         this.role = body.role;
         this.biography = body.bio;
         this.displayName = body.displayName;
