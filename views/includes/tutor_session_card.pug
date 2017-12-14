@@ -10,7 +10,7 @@
         h6.card-subtitle.mb-2.text-muted Tutored by <b>#{session.tutor ? session.tutor.displayName : 'unknown'}</b>
         .card-text: ul
             li At <b>#{session.school || "Unknown school"}</b> in the <b>#{session.location || 'unknown location'}</b>
-            li #{session.startVerb} <b>#{session.startTimeCalendar}</b>, for <b>#{session.durationHuman}</b>
+            li #{session.startVerb} <b>#{session.startTime_calendar}</b>, for <b>#{session.durationHuman}</b>
             li
                 <b>#{session.studentCount}</b> students signed up
                 if session.maxStudents

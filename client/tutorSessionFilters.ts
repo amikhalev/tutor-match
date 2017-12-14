@@ -1,10 +1,15 @@
 import $ from 'jquery';
 
 import { TutorSessionJSON, UserJSON } from '../common/json';
-import { filterSession, parseSessionFilters, SessionFilters, SessionFiltersQuery } from '../common/sessionFilters';
+import {
+    defaultSessionFiltersQuery, filterSession, isMoreSpecific, normalizeFiltersQuery, parseSessionFilters,
+    SessionFilters, SessionFiltersQuery,
+} from '../common/sessionFilters';
 
 $(() => {
+    const filtersEl = $('.tutor-session-filters');
     const currentUser: UserJSON | null = JSON.parse($('body').attr('data-user-data'));
+    const serverFilters: SessionFiltersQuery = JSON.parse(filtersEl.attr('data-server-filters'));
 
     const filterEls = {
         dateRange: $('#filter-dateRange'),
@@ -39,29 +44,35 @@ $(() => {
         updateLastCancelled();
     });
 
+    function setFiltersQuery(query: SessionFiltersQuery) {
+        filterEls.dateRange.val(query.dateRange || 'all');
+        filterEls.timeRange.val(query.timeRange || 'all');
+        if (query.cancelled == null) {
+            filterEls.cancelled.prop('indeterminate', true);
+        } else if (query.cancelled) {
+            filterEls.cancelled.prop('checked', true);
+        } else {
+            filterEls.cancelled.prop('checked', false);
+        }
+        filterEls.tutoring.prop('checked', query.tutoring);
+        filterEls.attending.prop('checked', query.attending);
+        filterEls.notStarted.prop('checked', query.notStarted);
+    }
+
     function resetFilters() {
-        filterEls.dateRange.val('all');
-        filterEls.timeRange.val('all');
-        filterEls.cancelled.prop('checked', false);
-        filterEls.tutoring.prop('checked', false);
-        filterEls.attending.prop('checked', false);
-        filterEls.notStarted.prop('checked', true);
+        setFiltersQuery(defaultSessionFiltersQuery);
+        applyFilters();
     }
 
     function getFiltersQuery(): SessionFiltersQuery {
-        return {
+        return normalizeFiltersQuery({
             dateRange: filterEls.dateRange.val() as any,
             timeRange: filterEls.timeRange.val() as any,
-            cancelled: filterEls.cancelled.prop('indeterminate') ? undefined : filterEls.cancelled.prop('checked'),
+            cancelled: filterEls.cancelled.prop('indeterminate') ? null : filterEls.cancelled.prop('checked'),
             tutoring: filterEls.tutoring.prop('checked'),
             attending: filterEls.attending.prop('checked'),
             notStarted: filterEls.notStarted.prop('checked'),
-        };
-    }
-
-    function getFilters(): SessionFilters {
-        const query = getFiltersQuery();
-        return parseSessionFilters(query, currentUser.id);
+        });
     }
 
     function getSessionData(session: JQuery): TutorSessionJSON {
@@ -71,8 +82,20 @@ $(() => {
         }
     }
 
-    function applyFilters() {
-        const filterData = getFilters();
+    function applyFilters(allowNavigate: boolean = true) {
+        const query = getFiltersQuery();
+        for (const key in query) {
+            if (query[key] === defaultSessionFiltersQuery[key]) {
+                delete query[key];
+            }
+        }
+        const filterData = parseSessionFilters(query, currentUser.id);
+        const newLocation = location.protocol + '//' + location.host + location.pathname + '?' + $.param(query);
+        if (isMoreSpecific(serverFilters, query) && allowNavigate) {
+            window.location.assign(newLocation);
+        } else {
+            window.history.pushState({}, document.title, newLocation);
+        }
         $('.tutor-session').each(function() {
             const session = $(this);
             const data = getSessionData(session);
@@ -91,7 +114,7 @@ $(() => {
         e.preventDefault();
     });
 
-    resetFilters();
-    applyFilters();
+    setFiltersQuery(serverFilters);
+    applyFilters(false);
     updateLastCancelled();
 });

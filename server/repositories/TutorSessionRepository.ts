@@ -45,9 +45,6 @@ function filterSession(filters: SessionFilters, query: SelectQueryBuilder<TutorS
     } else {
         query.leftJoinAndSelect('session.students', 'students');
     }
-    if (filters.notStarted) {
-        query.andWhere('session.startTime >= :now', { now: new Date() });
-    }
     if (filters.subject != null) {
         query.andWhere('session.subject LIKE :subject', { subject: filters.subject });
     }

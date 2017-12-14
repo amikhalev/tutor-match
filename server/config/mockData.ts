@@ -1,8 +1,10 @@
 import * as moment from 'moment';
+import 'moment-timezone';
 import { Connection } from 'typeorm';
 import { DeepPartial } from 'typeorm/common/DeepPartial';
 import { ObjectType } from 'typeorm/common/ObjectType';
 
+import timezone from '../../common/timezone';
 import * as e from '../entities';
 
 async function createMockData(connection: Connection) {
@@ -23,7 +25,7 @@ async function createMockData(connection: Connection) {
     const user3 = await createOrUpdate(e.User,
         { id: 3, role: e.UserRole.Teacher, displayName: 'User 3' });
 
-    const initial = moment().subtract({ days: 5 });
+    const initial = moment.tz(timezone).subtract({ days: 5 });
     for (let i = 1; i < 30; i++) {
         const session = new e.TutorSession();
         session.id = i;

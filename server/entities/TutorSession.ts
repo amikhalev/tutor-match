@@ -2,6 +2,7 @@ import * as moment from 'moment';
 import { AfterLoad, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { TutorSessionJSON } from '../../common/json';
+import timezone from '../../common/timezone';
 
 import { User, UserRole } from './User';
 
@@ -67,12 +68,16 @@ export class TutorSession {
         return (this.subject) ? `Tutoring session over ${this.subject}` : 'Tutoring session';
     }
 
-    get startTime_string() {
-        return moment(this.startTime).format('L LT');
+    get startTime_moment() {
+        return moment(this.startTime).tz(timezone);
     }
 
-    get startTimeCalendar() {
-        return moment(this.startTime).calendar(new Date(), {
+    get startTime_string() {
+        return this.startTime_moment.format('L LT');
+    }
+
+    get startTime_calendar() {
+        return this.startTime_moment.calendar(new Date(), {
             lastDay: '[yesterday at] LT',
             sameDay: '[today at] LT',
             nextDay: '[tomorrow at] LT',

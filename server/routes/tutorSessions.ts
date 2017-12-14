@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { parseSessionFilters } from '../../common/sessionFilters';
+import { defaultSessionFiltersQuery, normalizeFiltersQuery, parseSessionFilters } from '../../common/sessionFilters';
 import { TutorSession, UserRole } from '../entities';
 import { AppError, NotFoundError } from '../errors';
 import { Repositories } from '../repositories';
@@ -27,12 +27,13 @@ function createRouter(repositories: Repositories) {
     });
 
     router.get('/', ensureLoggedIn(nav.tutorSessions.minimumRole), (req, res, next) => {
-        const filters = parseSessionFilters(req.query, req.user);
+        const query = normalizeFiltersQuery(req.query);
+        const filters = parseSessionFilters(query, req.user.id);
         // console.log('filters: ', filters);
         tutorSessions.findSessionsFiltered(filters)
             .then(sessions => {
                 res.render('tutor_sessions', {
-                    ...nav.locals(req), query: req.query, sessions,
+                    ...nav.locals(req), sessions, query,
                 });
             }).catch(next);
     });

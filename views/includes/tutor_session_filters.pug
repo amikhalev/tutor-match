@@ -1,4 +1,4 @@
-.card.mb-3
+.card.mb-3.tutor-session-filters(data-server-filters=JSON.stringify(query))
   a.card-header(role="tab", data-toggle="collapse", href="#filters")
     h5.mb-0 Filters
   .collapse.show#filters: .card-body
@@ -9,8 +9,8 @@
             label(for="filter-dateRange") Date range
             select.form-control#filter-dateRange
               option(value="all") All dates
-              option(value="today", selected=(query.dateRange === "today")) Today
-              option(value="this_week", selected=(query.dateRange === "this_week")) This week
+              option(value="today") Today
+              option(value="this_week") This week
           .form-group.col-3
             label(for="filter-timeRange") Time range
             select.form-control#filter-timeRange
