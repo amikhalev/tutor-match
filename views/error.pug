@@ -1,21 +1,21 @@
 html
-    head
-        meta(charset='utf-8')
-        meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
-        meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+  head
+    meta(charset='utf-8')
+    meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
 
-        title TutorMatch - 404 not found
-        link(rel='stylesheet' href='/static/css/main.css')
-        script(src="/static/jspm/system.src.js")
-        script(src="/static/js/client/jspm.config.js")
-        script.
-            SystemJS.import('client/common');
-    body: .container
-        h1.error-title.mt-4 Oops! An error has occurred
-        h4.font-weight-normal.error-subtitle.mt-2= err.message
-        h6.mt-5 Details
-            .badge.badge-secondary.ml-2= err.httpStatus
-        pre.error-details= err.toString()
-        .error-buttons
-            a.btn.btn-primary(href="/") Go Home
+    title TutorMatch - 404 not found
+    link(rel='stylesheet' href='/static/css/main.css')
+    script(src="/static/jspm/system.src.js")
+    script(src="/static/js/client/jspm.config.js")
+    script.
+      SystemJS.import('client/common');
+  body: .container
+    h1.error-title.mt-4 Oops! An error has occurred
+    h4.font-weight-normal.error-subtitle.mt-2= err.message
+    h6.mt-5 Details
+      .badge.badge-secondary.ml-2= err.httpStatus
+    pre.error-details= err.toString()
+    .error-buttons
+      a.btn.btn-primary(href="/") Go Home
 

@@ -1,39 +1,39 @@
 -
-    let cardClass;
-    if (session.isCancelled)
-        cardClass = 'border-danger';
+  let cardClass;
+  if (session.isCancelled)
+    cardClass = 'border-danger';
 .card.tutor-session(class=cardClass, data-session-data=JSON.stringify(session))
-    .card-body
-        h4.card-title= session.title
-            if session.isCancelled
-                span.h6.ml-2.badge.badge-danger Cancelled
-        h6.card-subtitle.mb-2.text-muted Tutored by <b>#{session.tutor ? session.tutor.displayName : 'unknown'}</b>
-        .card-text: ul
-            li At <b>#{session.school || "Unknown school"}</b> in the <b>#{session.location || 'unknown location'}</b>
-            li #{session.startVerb} <b>#{session.startTime_calendar}</b>, for <b>#{session.durationHuman}</b>
-            li
-                <b>#{session.studentCount}</b> students signed up
-                if session.maxStudents
-                    |  (max. of <b>#{session.maxStudents}</b>)
-                if showing_single && user && session.userCanModify(user)
-                    ul
-                        each student in session.students
-                            li= student.displayName
-        .card-buttons
-            if !showing_single
-                a.btn.btn-outline-secondary(href=session.url) Details
-            if user && session.userIsSignedUpFor(user)
-                form.cancel-sign-up-form(action=session.url + "/sign_up_cancel", method="POST")
-                .btn-group
-                    button.btn.btn-primary(disabled) Signed up
-                    button.btn.btn-outline-danger.cancel-sign-up 
-                        i.fa.fa-ban.mr-2
-                        | Cancel
-            else
-                form(action=session.url + "/sign_up" method="POST")
-                    button.btn.btn-primary(type="submit") Sign up
-            if showing_single && user && session.userCanModify(user)
-                a.btn.btn-secondary(href=session.url + "/edit") Edit
-                form(action=session.url + "/cancel", method="POST")
-                    button.btn.btn-danger(type="submit", disabled=session.isCancelled)
-                        = session.isCancelled ? 'Cancelled' : 'Cancel session'
+  .card-body
+    h4.card-title= session.title
+      if session.isCancelled
+        span.h6.ml-2.badge.badge-danger Cancelled
+    h6.card-subtitle.mb-2.text-muted Tutored by <b>#{session.tutor ? session.tutor.displayName : 'unknown'}</b>
+    .card-text: ul
+      li At <b>#{session.school || "Unknown school"}</b> in the <b>#{session.location || 'unknown location'}</b>
+      li #{session.startVerb} <b>#{session.startTime_calendar}</b>, for <b>#{session.durationHuman}</b>
+      li
+        <b>#{session.studentCount}</b> students signed up
+        if session.maxStudents
+          |  (max. of <b>#{session.maxStudents}</b>)
+        if showing_single && user && session.userCanModify(user)
+          ul
+            each student in session.students
+              li= student.displayName
+    .card-buttons
+      if !showing_single
+        a.btn.btn-outline-secondary(href=session.url) Details
+      if user && session.userIsSignedUpFor(user)
+        form.cancel-sign-up-form(action=session.url + "/sign_up_cancel", method="POST")
+        .btn-group
+          button.btn.btn-primary(disabled) Signed up
+          button.btn.btn-outline-danger.cancel-sign-up 
+            i.fa.fa-ban.mr-2
+            | Cancel
+      else
+        form(action=session.url + "/sign_up" method="POST")
+          button.btn.btn-primary(type="submit") Sign up
+      if showing_single && user && session.userCanModify(user)
+        a.btn.btn-secondary(href=session.url + "/edit") Edit
+        form(action=session.url + "/cancel", method="POST")
+          button.btn.btn-danger(type="submit", disabled=session.isCancelled)
+            = session.isCancelled ? 'Cancelled' : 'Cancel session'

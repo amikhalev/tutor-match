@@ -2,13 +2,13 @@ extends layout.pug
 
 block head
   script.
-      SystemJS.import('client/tutorSessionFilters')
-      SystemJS.import('client/tutorSessionCard')
+    SystemJS.import('client/tutorSessionFilters')
+    SystemJS.import('client/tutorSessionCard')
 
 block content
   #session-list
     h1 Sessions
     include includes/tutor_session_filters
     .row.list
-     each session in sessions
-      .col-12.col-lg-6.col-xl-4.pb-3: include includes/tutor_session_card
+      each session in sessions
+        .col-12.col-lg-6.col-xl-4.pb-3: include includes/tutor_session_card
