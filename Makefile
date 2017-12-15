@@ -25,16 +25,16 @@ NODE_MODULES     :=./node_modules
 NODE_MODULES_BIN :=$(NODE_MODULES)/.bin
 JSPM_PACKAGES    :=./static/jspm
 
-TSC 	?=$(NODE) $(NODE_MODULES_BIN)/tsc
-TSLINT  ?=$(NODE) $(NODE_MODULES_BIN)/tslint
-NODEMON ?=$(NODE) $(NODE_MODULES_BIN)/nodemon
-JSPM    ?=$(NODE) $(NODE_MODULES_BIN)/jspm
+TSC 	:=$(NODE_MODULES_BIN)/tsc
+TSLINT  :=$(NODE_MODULES_BIN)/tslint
+NODEMON :=$(NODE_MODULES_BIN)/nodemon
+JSPM    :=$(NODE_MODULES_BIN)/jspm
 
-YARN_FLAGS 	  ?=
-NODE_FLAGS    ?=
-TSC_FLAGS	  ?=
-TSLINT_FLAGS  ?=--format verbose $(shell [ ! -z "$(FIX)" -a "$(FIX)" != "0" ] && echo "--fix")
-NODEMON_FLAGS ?=--delay 0.5 --quiet --watch .env --watch index.js --watch dist --exec make start
+YARN_FLAGS 	  :=
+NODE_FLAGS    :=
+TSC_FLAGS	  :=
+TSLINT_FLAGS  :=--format verbose $(shell [ ! -z "$(FIX)" -a "$(FIX)" != "0" ] && echo "--fix")
+NODEMON_FLAGS :=--delay 0.5 --quiet --watch .env --watch index.js --watch dist --exec make start
 
 SERVER_SRCS :=$(wildcard server/*.ts) $(wildcard server/*/*.ts) $(wildcard common/*.ts)
 SERVER_OUTS :=$(addprefix dist/,$(SERVER_SRCS:.ts=.js))
@@ -62,7 +62,7 @@ install-yarn:
 
 install-jspm: $(NODE_MODULES)
 	@echo "==> Installing jspm packages with jspm"
-	$(JSPM) install
+	$(NODE) $(JSPM) install
 
 pre-deps:
 	@echo "==> (Re-)installing all application dependencies"
@@ -72,6 +72,9 @@ deps: pre-deps install-yarn install-jspm
 # Target to install node_modules if depended upon by other targets
 $(NODE_MODULES): package.json yarn.lock
 	@[ -e "$(NODE_MODULES)" ] || (echo "==> $(NODE_MODULES) not found!" && make install-yarn)
+
+$(TSC): package.json yarn.lock
+	@[ -e "$(TSC)" ] || (echo "==> $(TSC) not found!" && make YARN_FLAGS=--production=false install-yarn)
 
 # Target to install jspm packages if depended upon by other targets
 $(JSPM_PACKAGES): package.json
@@ -87,28 +90,28 @@ build: pre-build build-server build-client
 # Builds the server code (using typescript)
 build-server: $(SERVER_OUTS)
 
-$(SERVER_OUTS:.js=%js): $(NODE_MODULES) server/tsconfig.json $(SERVER_SRCS)
+$(SERVER_OUTS:.js=%js): $(NODE_MODULES) $(TSC) server/tsconfig.json $(SERVER_SRCS)
 	@echo "==> Building server"
-	$(TSC) $(TSC_FLAGS) --project server
+	$(NODE) $(TSC) $(TSC_FLAGS) --project server
 
 # Builds the client code (using typescript)
 build-client: $(CLIENT_OUTS)
 
-$(CLIENT_OUTS:.js=%js): $(NODE_MODULES) $(JSPM_PACKAGES) client/tsconfig.json $(CLIENT_SRCS)
+$(CLIENT_OUTS:.js=%js): $(NODE_MODULES) $(JSPM_PACKAGES) $(TSC) client/tsconfig.json $(CLIENT_SRCS)
 	@echo "==> Building client"
-	$(TSC) $(TSC_FLAGS) --project client
+	$(NODE) $(TSC) $(TSC_FLAGS) --project client
 
 watch:
 	@echo "==> Watching all files for changes"
 	@scripts/parallel.sh "make watch-server" "make watch-client"
 
-watch-server: $(NODE_MODULES)
+watch-server: $(NODE_MODULES) $(TSC)
 	@echo "==> Watching server for changes"
-	$(TSC) $(TSC_FLAGS) --project server --watch
+	$(NODE) $(TSC) $(TSC_FLAGS) --project server --watch
 
-watch-client: $(NODE_MODULES) $(JSPM_PACKAGES)
+watch-client: $(NODE_MODULES) $(TSC) $(JSPM_PACKAGES)
 	@echo "==> Watching client for changes"
-	$(TSC) $(TSC_FLAGS) --project client --watch
+	$(NODE) $(TSC) $(TSC_FLAGS) --project client --watch
 
 start:
 # only build if not running on now.sh, and if in development
@@ -117,7 +120,7 @@ start:
 
 start-watch:
 	@echo "==> Restarting tutor-match on every rebuild"
-	@scripts/parallel.sh 'make watch' '$(NODEMON) $(NODEMON_FLAGS)'
+	@scripts/parallel.sh 'make watch' '$(NODE) $(NODEMON) $(NODEMON_FLAGS)'
 
 # Lints everything
 # Run with FIX=1 to automaticall fix some lint errors
@@ -125,9 +128,9 @@ lint: lint-server lint-client
 
 lint-server: $(NODE_MODULES)
 	@echo "==> Linting server"
-	$(TSLINT) $(TSLINT_FLAGS) --project server
+	$(NODE) $(TSLINT) $(TSLINT_FLAGS) --project server
 
 lint-client: $(NODE_MODULES)
 	@echo "==> Linting client"
-	$(TSLINT) $(TSLINT_FLAGS) --project client --exclude client/jspm.config.js
+	$(NODE) $(TSLINT) $(TSLINT_FLAGS) --project client --exclude client/jspm.config.js
 
