@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { TutorSessionJSON, UserJSON } from '../common/json';
 import {
     defaultSessionFiltersQuery, filterSession, isMoreSpecific, normalizeFiltersQuery, parseSessionFilters,
-    SessionFilters, SessionFiltersQuery,
+    SessionFiltersQuery,
 } from '../common/sessionFilters';
 
 $(() => {

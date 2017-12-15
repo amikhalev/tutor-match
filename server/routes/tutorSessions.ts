@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { defaultSessionFiltersQuery, normalizeFiltersQuery, parseSessionFilters } from '../../common/sessionFilters';
+import { normalizeFiltersQuery, parseSessionFilters } from '../../common/sessionFilters';
 import { TutorSession, UserRole } from '../entities';
 import { AppError, NotFoundError } from '../errors';
 import { Repositories } from '../repositories';

@@ -240,9 +240,8 @@ export function parseSessionFilters(query: SessionFiltersQuery, currentUserId?: 
 }
 
 export function filterSession(filt: SessionFilters, session: TutorSessionJSON,
-    currentUser: UserJSON | undefined): boolean {
+                              currentUser: UserJSON | undefined): boolean {
     const startTime = moment(session.startTime);
-    const now = moment.tz(timezone);
     if (filt.startDate && startTime.isBefore(filt.startDate)) {
         return false;
     } else if (filt.endDate && startTime.isAfter(filt.endDate)) {
