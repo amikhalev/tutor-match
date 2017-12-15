@@ -1,59 +1,54 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558
-    // for the documentation about the tasks.json format
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "tsc:build",
-            "type": "typescript",
-            "tsconfig": "server/tsconfig.json",
-            "problemMatcher": [
-                "$tsc"
-            ]
-        },
-        {
-            "label": "tsc:watch",
-            "type": "typescript",
-            "tsconfig": "server/tsconfig.json",
-            "option": "watch",
-            "problemMatcher": [
-                "$tsc-watch"
-            ]
-        },
-        {
-            "taskName": "start",
-            "type": "process",
-            "command": "./node.sh",
-            "args": [
-                "."
-            ],
-            "problemMatcher": []
-        },
-        {
-            "label": "make lint",
-            "type": "process",
-            "command": "make",
-            "args": [
-                "lint"
-            ],
-            "problemMatcher": [
-                "$tslint5"
-            ]
-        },
-        {
-            "taskName": "tslint:fix",
-            "type": "process",
-            "command": "node_modules/.bin/tslint",
-            "args": [
-                "-p",
-                "server",
-                "-t",
-                "verbose",
-                "--fix"
-            ],
-            "problemMatcher": [
-                "$tslint5"
-            ]
-        }
-    ]
+  // See https://go.microsoft.com/fwlink/?LinkId=733558
+  // for the documentation about the tasks.json format
+  "version": "2.0.0",
+  "tasks": [{
+      "label": "tsc:build server",
+      "type": "typescript",
+      "tsconfig": "server/tsconfig.json",
+      "problemMatcher": [
+        "$tsc"
+      ]
+    },
+    {
+      "label": "tsc:watch server",
+      "type": "typescript",
+      "tsconfig": "server/tsconfig.json",
+      "option": "watch",
+      "problemMatcher": [
+        "$tsc-watch"
+      ]
+    },
+    {
+      "label": "start",
+      "type": "process",
+      "command": "./node.sh",
+      "args": [
+        "."
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "make lint",
+      "type": "process",
+      "command": "make",
+      "args": [
+        "lint"
+      ],
+      "problemMatcher": [
+        "$tslint5"
+      ]
+    },
+    {
+      "label": "make lint fix",
+      "type": "process",
+      "command": "make",
+      "args": [
+        "lint", "TSLINT_FLAGS=--fix"
+      ],
+      "problemMatcher": [
+        "$tslint5"
+      ]
+    }
+  ]
 }
