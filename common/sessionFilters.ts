@@ -41,8 +41,8 @@ export interface DateRange {
 /** parses a query string into a DateRange (sanitizes and parses dates) */
 export function parseDateRange(query: DateRangeQuery): DateRange {
     query = typeof query === 'object' ? query : defaultSessionFiltersQuery;
-    let startDate: moment.Moment | undefined;
-    let endDate: moment.Moment | undefined;
+    let startDate: moment.Moment | null = null;
+    let endDate: moment.Moment | null = null;
     const now = moment.tz(timezone);
     const today = now.clone().set({ hour: 0 });
     if (typeof query.dateRange === 'string') {
@@ -101,8 +101,8 @@ const TIME_FORMAT = 'HH:mm';
 /** parses a time range from a query string */
 export function parseTimeRange(query: TimeRangeQuery): TimeRange {
     query = typeof query === 'object' ? query : defaultSessionFiltersQuery;
-    let startTime: moment.Moment | undefined;
-    let endTime: moment.Moment | undefined;
+    let startTime: moment.Moment | null = null;
+    let endTime: moment.Moment | null = null;
     if (typeof query.timeRange === 'string') {
         query.timeRange = query.timeRange.trim().toLowerCase() as any;
         switch (query.timeRange) {
@@ -113,8 +113,8 @@ export function parseTimeRange(query: TimeRangeQuery): TimeRange {
             case 'after_school':
                 startTime = moment({ hour: 13 }); endTime = moment({ hour: 17 }); break;
             case 'range':
-                startTime = moment(query.startTime, TIME_FORMAT);
-                endTime = moment(query.endTime, TIME_FORMAT);
+                if (query.startTime) startTime = moment(query.startTime, TIME_FORMAT);
+                if (query.endTime) endTime = moment(query.endTime, TIME_FORMAT);
                 break;
         }
     }
@@ -235,7 +235,7 @@ export function parseSessionFilters(query: SessionFiltersQuery, currentUserId?: 
         cancelled: parseBoolean(query.cancelled),
         tutoring: userQuery(query.tutoring, currentUserId),
         attending: userQuery(query.attending, currentUserId),
-        subject: (typeof query.subject !== 'string') ? undefined : query.subject,
+        subject: (typeof query.subject !== 'string') ? null : query.subject,
     };
 }
 
