@@ -40,7 +40,7 @@ SERVER_SRCS :=$(wildcard server/*.ts) $(wildcard server/*/*.ts) $(wildcard commo
 SERVER_OUTS :=$(addprefix dist/,$(SERVER_SRCS:.ts=.js))
 
 CLIENT_SRCS :=$(wildcard client/*.ts) $(wildcard client/*/*.ts) $(wildcard common/*.ts)
-CLIENT_OUTS :=$(addprefix static/js/,$(CLIENT_SRCS:.ts=.js))
+CLIENT_OUTS :=$(addprefix static/js/,$(CLIENT_SRCS:.ts=.js)) static/js/jspm.config.js
 
 .PHONY: all clean clean-modules install-yarn install-jspm pre-deps deps
 .PHONY: build build-server build-client watch watch-server start start-watch
@@ -95,11 +95,18 @@ $(SERVER_OUTS:.js=%js): $(NODE_MODULES) $(TSC) server/tsconfig.json $(SERVER_SRC
 	$(NODE) $(TSC) $(TSC_FLAGS) --project server
 
 # Builds the client code (using typescript)
-build-client: $(CLIENT_OUTS)
+build-client: $(CLIENT_OUTS) static/js/jspm.config.js static/js/client.bundle.js
 
 $(CLIENT_OUTS:.js=%js): $(NODE_MODULES) $(JSPM_PACKAGES) $(TSC) client/tsconfig.json $(CLIENT_SRCS)
 	@echo "==> Building client"
 	$(NODE) $(TSC) $(TSC_FLAGS) --project client
+
+static/js/jspm.config.js: jspm.config.js
+	cp $< $@
+
+static/js/client.bundle.js: $(CLIENT_OUTS) jspm.config.js $(JSPM_PACKAGES)
+	@echo "==> Creating production client bundle"
+	jspm bundle './static/js/client/*' + ./static/jspm/github/systemjs/plugin-css@0.1.36 $@ --minify
 
 watch:
 	@echo "==> Watching all files for changes"

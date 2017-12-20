@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import * as express from 'express';
 
 import { ensureLoggedIn } from '../config/auth';
 import { TutorSession, User } from '../entities';
@@ -19,22 +19,22 @@ declare global {
     }
 }
 
-function createRouter(repositories: Repositories) {
-    const router = Router();
+function configureRoutes(app: express.Express, repositories: Repositories) {
+    app.locals.NODE_ENV = process.env.NODE_ENV;
 
-    router.get(nav.home.href, ensureLoggedIn(nav.home.minimumRole), (req, res) => {
+    app.get(nav.home.href, ensureLoggedIn(nav.home.minimumRole), (req, res) => {
         console.log('user: ', req.user && req.user.displayName);
         res.render('index', nav.locals(req));
     });
 
-    router.use('/tutor_sessions', createTutorSessions(repositories));
-    router.use('/profiles', createProfiles(repositories));
+    app.use('/tutor_sessions', createTutorSessions(repositories));
+    app.use('/profiles', createProfiles(repositories));
 
-    router.use((req, res, next) => {
+    app.use((req, res, next) => {
         next(new NotFoundError({ resource: req.url }));
     });
 
-    router.use((err, req, res, next) => {
+    app.use((err, req, res, next) => {
         if (err instanceof AppError) {
             res.status(err.httpStatus);
             if (req.accepts('html')) {
@@ -47,7 +47,6 @@ function createRouter(repositories: Repositories) {
         }
         next(err);
     });
-
-    return router;
 }
-export { createRouter };
+
+export { configureRoutes };

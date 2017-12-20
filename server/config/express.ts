@@ -13,7 +13,10 @@ import { getEnv } from '../env';
 async function configureExpress(app: express.Express, connection: Connection) {
     app.set('view engine', 'pug');
     app.set('views', path.resolve('views'));
-    app.use('/static/', express.static(path.resolve('static')));
+    const prod = process.env.NODE_ENV === 'production';
+    app.use('/static/', express.static(path.resolve('static'), {
+        immutable: prod, maxAge: (prod ? 60 * 60 * 1000 : 0),
+    }));
     app.use(cookieParser());
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: true }));

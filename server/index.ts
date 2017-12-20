@@ -4,7 +4,7 @@ import { Connection } from 'typeorm';
 
 import * as config from './config';
 import { Repositories } from './repositories';
-import { createRouter } from './routes';
+import { configureRoutes } from './routes';
 
 async function createApp(connection: Connection) {
     const repositories = new Repositories(connection);
@@ -15,8 +15,7 @@ async function createApp(connection: Connection) {
     await config.configureExpress(app, connection);
     config.configureAuth(app, passport, repositories);
 
-    const router = await createRouter(repositories);
-    app.use(router);
+    await configureRoutes(app, repositories);
 
     return { app, passport, connection };
 }

@@ -51,9 +51,9 @@
   },
   "jspm": {
     "configFiles": {
-      "jspm": "client/jspm.config.js"
+      "jspm": "./jspm.config.js"
     },
-    "configFile": "client/jspm.config.js",
+    "configFile": "./jspm.config.js",
     "directories": {
       "baseURL": "static",
       "packages": "static/jspm"
