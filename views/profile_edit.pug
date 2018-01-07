@@ -4,7 +4,7 @@ block content
   h1 Edit user profile
   .card
     .card-body
-      form.form.my-md-0(action=theUser.url + "/edit", method='POST')
+      form.form.my-md-0(action=theUser.profileUrl + "/edit", method='POST')
         h3.card-title
           input.form-control.form-control-lg(type="text", name="displayName", value=theUser.displayName, maxlength="100")
         - const allowedRoles = user.allowedRoleChanges;
@@ -21,4 +21,4 @@ block content
           textarea.form-control(id="bio", name="bio", cols="50", rows="5", maxlength="250")= theUser.biography
         .card-buttons
           button.btn.btn-primary(type="submit") Submit
-          a.btn.btn-danger(href=theUser.url) Cancel
+          a.btn.btn-danger(href=theUser.profileUrl) Cancel

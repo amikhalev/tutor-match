@@ -43,7 +43,7 @@ function createRouter(repositories: Repositories) {
         tutorSession.tutor = req.user;
         tutorSessions.save(tutorSession)
             .then(newSession => {
-                res.redirect('/' + newSession.id);
+                res.redirect(newSession.url);
             }).catch(next);
     });
 
