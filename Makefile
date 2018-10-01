@@ -106,7 +106,7 @@ static/js/jspm.config.js: jspm.config.js
 
 static/js/client.bundle.js: $(CLIENT_OUTS) jspm.config.js $(JSPM_PACKAGES)
 	@echo "==> Creating production client bundle"
-	jspm bundle './static/js/client/*' + ./static/jspm/github/systemjs/plugin-css@0.1.36 $@ --minify
+	$(NODE) $(JSPM) bundle './static/js/client/*' + ./static/jspm/github/systemjs/plugin-css@0.1.36 $@ --minify
 
 watch:
 	@echo "==> Watching all files for changes"
